@@ -37,3 +37,20 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 - **Nicole Zheng** — Time-based Mechanics  
 - **Ying Li** — Perlin Noise and Randomness  
 - **Cayla Wang** — Audio
+
+
+
+
+### Mechanic 4: Audio
+
+For my audio mechanic, I want to make the grid respond to music in a way that feels physical, as if the cross-based surface is vibrating or being pulled by the sound. The viewer loads a music file into the sketch, and the grid reacts to it in real time. I will use p5.FFT to split the audio into three frequency bands — bass, mid, and treble — and each one will drive a different kind of movement in the grid.
+
+The bass part would control the biggest, most sudden changes. When a heavy beat hits, the grid cells expand outward and then snap back into place. This creates a pulse across the whole canvas, like the woven surface being struck and briefly losing its structure before returning to order. This connects to Ding Yi's idea of a rigid system that still carries tension beneath the surface.
+
+The mid frequencies would create a slower, spreading ripple that moves outward from the centre of the grid. Instead of the whole canvas reacting at once, the change travels across the cells gradually, similar to how a single thread pulled in a woven fabric causes a wave of movement across the surrounding area.
+
+The high frequencies would affect individual cells in a smaller and more scattered way, causing certain crosses or X marks to flicker, shift slightly, or brighten for a moment. This mirrors the visual noise that appears in Ding Yi's work when viewed up close, where small irregularities exist within an otherwise controlled pattern.
+
+When the music is dense and loud, the grid is constantly moving and unstable. When the music quiets down, the surface settles back into stillness. I hope this mechanic can show how sound and structure can interact, where the ordered grid becomes something reactive and alive depending on what is playing.
+
+![Audio diagram](readmeImages/caylaimage.png)
