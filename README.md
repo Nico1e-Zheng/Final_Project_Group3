@@ -28,3 +28,12 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 
 3. *Loom #138* — Anna Lucia  
    [Art Blocks Token Page](https://www.artblocks.io/token/1/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/213000138?utm_source=chatgpt.com)
+
+   ## Part 2: Mechanics
+
+### Team Members and Mechanic Ownership
+
+- **Xueqin Zhao** — User Input  
+- **Nicole Zheng** — Time-based Mechanics  
+- **Ying Li** — Perlin Noise and Randomness  
+- **Cayla Wang** — Audio
