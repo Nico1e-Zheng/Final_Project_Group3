@@ -30,19 +30,30 @@ The user input mechanic allows the viewer to control the overall colour mood of 
 The viewer can also click the mouse to lock the current colour palette. When the colour is locked, mouse movement will no longer change the colours. Clicking again will unlock the palette and return control to the viewer. This keeps the interaction simple and easy to understand.
 This mechanic connects to our project vision because Ding Yi’s work is built from repeated cross marks, dense grids and layered colour systems. My mechanic does not change the structure of the grid. Instead, it allows the viewer to influence the atmosphere of the artwork while keeping the repeated cross-based system recognisable.
 
+<img src="readmeImages/user-input.png">
+
+*User input mechanic — mouse movement shifts colour mood, click to lock palette.*
+
 ### Mechanic 2: Time-based: Nicole Zheng
 For my time-based mechanic, I want to create an animation that transforms the group's artwork into **text characters** over time.
 
 Depending on how our group interprets the chosen artwork, this could take two forms. If the base image uses varied geometric symbols, I would create a **"flip card" wave effect**. A wave would sweep across the grid, and each cell would flip like a card to reveal a matching text character on the other side (for example, ○ → O, + → +, □ → #). I plan to achieve the flip effect by using `cos()` to scale each cell horizontally. As the cell squishes to zero width, the content switches from shape to character, then expands back to show the new face. By offsetting the timing based on each cell's position and `frameCount`, the flips should ripple across the canvas rather than happening all at once.
 
+<img src="readmeImages/ascii-sketch.png" width="400">
+
+*Flip card concept — geometric crosses transformed into text characters with colours preserved.*
+
 If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
 
-<img src="readmeImages/ascii-sketch.png" width="400">
-*Before/after comparison — geometric crosses transformed into text characters with colours preserved.*
+<img src="readmeImages/enigmatriz-ascii-texture.webp" width="300">
+
+*Cracking concept reference — characters used as visual texture (Enigmatriz).*
 
 In both cases, the original colours would stay the same throughout, so the image remains recognisable even after the transformation. Once the animation finishes, it would reverse and loop back to the original artwork.
 
-I'm not entirely sure how complex this will be to implement, but based on my research the core concepts (`cos()`, `scale()`, `push()`/`pop()`, and `frameCount`) are covered in tutorials. 
+I'm not entirely sure how complex this will be to implement, but some of the core concepts have been covered in class (`cos()`, `scale()`, `frameCount`), and the rest (`push()`/`pop()`) are covered in p5.js tutorials I've been researching. 
+
+> Image sources: Flip card sketch generated using [ASCII Lab](https://ascii-lab.sg.agentos-app.run) | Cracking concept reference from [Enigmatriz](https://enigmatriz.com/artworks/ascii-art)
 
 ### Mechanic 3: Perlin Noise and Randomness: Ying Li
 The Perlin noise and randomness mechanic will make the cross-based grid feel less fixed and more like a living digital textile. Ding Yi’s artwork appears highly ordered from a distance, but when viewed closely, the repeated cross marks create a dense and slightly irregular surface. I want to translate this quality into code by using random values and Perlin noise to create controlled imperfections inside the grid.
