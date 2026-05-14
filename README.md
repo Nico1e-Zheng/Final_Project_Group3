@@ -55,6 +55,7 @@ The audio mechanic transforms the grid into a **rhythmic, elastic loom** that re
 The **bass** frequencies control the **"Global Elasticity"** of the grid: on every heavy beat, the entire grid will "pinch" toward the center or expand outward before snapping back, making the digital textile feel like it’s gasping or pulsing in sync with the rhythm. The **mid-range** frequencies handle **"Shearing and Alignment"**: instead of random drifting, the mid-tones will cause even and odd rows of crosses to slide horizontally in opposite directions, mimicking the mechanical shifting of threads on a loom. Finally, the **treble** frequencies trigger **"Signal Flashes"**: high-pitched sounds will cause individual crosses to flicker or change stroke weight instantly, adding a sharp, digital "glitch" texture that contrasts with the smooth movements elsewhere.
 
 <img src="readmeImages/audio-mechanic.png" width="600">
+
 *Bass controls grid elasticity, mids shift rows like a loom, treble triggers signal flashes.*
 
 This mechanic connects to our project by turning Ding Yi’s static system into a **reactive instrument**, where the ordered grid is no longer just a surface, but a physical structure that vibrates, stretches, and reacts to the pulse of the sound.
