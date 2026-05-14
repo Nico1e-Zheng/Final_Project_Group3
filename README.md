@@ -57,7 +57,5 @@ This mechanic connects to our project by turning Ding Yi’s static system into 
 ## Part 3: Putting It Together
 
 Our project is like weaving a "breathing" digital textile on a shared canvas.
-
-The grid of crosses is our foundation. Xueqin acts as the weaver, letting the user slide the mouse to change the color mood smoothly. Ying Li breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. Cayla makes the grid dance to the music—bass creates physical ripples, while treble adds a digital flicker. Finally, Nicole uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
-
+The grid of crosses is our foundation. Xueqin acts as the weaver, letting the user slide the mouse to change the color mood smoothly. Ying Li breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. Cayla transforms the grid into a rhythmic, elastic loom Finally, Nicole uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
 By sharing the same grid system, our mechanics layer on top of each other, turning a static painting into a responsive, evolving, and multisensory experience.
