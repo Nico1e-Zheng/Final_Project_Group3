@@ -29,7 +29,8 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 3. *Loom #138* — Anna Lucia  
    [Art Blocks Token Page](https://www.artblocks.io/token/1/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/213000138?utm_source=chatgpt.com)
 
-   ## Part 2: Mechanics
+
+## Part 2: Mechanics
 
 ### Team Members and Mechanic Ownership
 
@@ -54,3 +55,11 @@ The high frequencies would affect individual cells in a smaller and more scatter
 When the music is dense and loud, the grid is constantly moving and unstable. When the music quiets down, the surface settles back into stillness. I hope this mechanic can show how sound and structure can interact, where the ordered grid becomes something reactive and alive depending on what is playing.
 
 ![Audio diagram](readmeImages/caylaimage.png)
+
+## Part 3: Putting It Together
+
+Our project is like weaving a "breathing" digital textile on a shared canvas.
+
+The grid of crosses is our foundation. Xueqin acts as the weaver, letting the user slide the mouse to change the color mood smoothly. Ying Li breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. Cayla makes the grid dance to the music—bass creates physical ripples, while treble adds a digital flicker. Finally, Nicole uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
+
+By sharing the same grid system, our mechanics layer on top of each other, turning a static painting into a responsive, evolving, and multisensory experience.
