@@ -4,17 +4,20 @@
 
 Our team has chosen to reinterpret *Appearance of Crosses* by **Ding Yi**, a Chinese contemporary artist known for his grid-based paintings made from repeated cross and X motifs with layered colours. His works are built on a simple grid structure, but the overlapping colours make them feel dense and chaotic up close.
 
-![Appearance of Crosses by Ding Yi](readmeImages/dingyi.png)
+<img src="readmeImages/dingyi.png" width="350">
+
 *Appearance of Crosses (Ding Yi) — the existing artwork our project is based on.*
 
 We were inspired by **Seohyo**'s *Tidal Tessellation* for how it uses varied geometric symbols as building blocks in a grid to reconstruct an image. We want to bring this idea into our piece by incorporating shapes like circles, lines, and squares alongside Ding Yi's crosses. 
 
-![Tidal Tessellation by Seohyo](readmeImages/tidal-tessellation.png)
+<img src="readmeImages/tidal-tessellation.png" width="250">
+
 *Tidal Tessellation (Seohyo) — inspiration for using varied geometric symbols in a grid.*
 
 We were also inspired by **Anna Lucia**'s *Loom #0* (2021), where repeated lines are organised like threads on a loom, electronic circuits, or data paths. This gave us the idea to develop Ding Yi's cross grid into a **digital textile** that changes based on **user input, time, randomness, and sound**.
 
-![Loom #0 by Anna Lucia](readmeImages/loom-anna-lucia.png)
+<img src="readmeImages/loom-anna-lucia.png" width="350">
+
 *Loom #0 (Anna Lucia, 2021) — inspiration for the digital textile concept.*
 
 We plan to take Ding Yi's core visual elements, such as crosses, repetition, density, and layered colour, and turn them into something that can move and change. 
@@ -34,7 +37,7 @@ Depending on how our group interprets the chosen artwork, this could take two fo
 
 If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
 
-![ASCII transition sketch](readmeImages/ascii-sketch.png)
+<img src="readmeImages/ascii-sketch.png" width="350">
 *Before/after comparison — geometric crosses transformed into text characters with colours preserved.*
 
 In both cases, the original colours would stay the same throughout, so the image remains recognisable even after the transformation. Once the animation finishes, it would reverse and loop back to the original artwork.
@@ -51,12 +54,15 @@ The audio mechanic transforms the grid into a **rhythmic, elastic loom** that re
 
 The **bass** frequencies control the **"Global Elasticity"** of the grid: on every heavy beat, the entire grid will "pinch" toward the center or expand outward before snapping back, making the digital textile feel like it’s gasping or pulsing in sync with the rhythm. The **mid-range** frequencies handle **"Shearing and Alignment"**: instead of random drifting, the mid-tones will cause even and odd rows of crosses to slide horizontally in opposite directions, mimicking the mechanical shifting of threads on a loom. Finally, the **treble** frequencies trigger **"Signal Flashes"**: high-pitched sounds will cause individual crosses to flicker or change stroke weight instantly, adding a sharp, digital "glitch" texture that contrasts with the smooth movements elsewhere.
 
-![Audio mechanic diagram](readmeImages/audio-mechanic.png)
+<img src="readmeImages/audio-mechanic.png" width="600">
 *Bass controls grid elasticity, mids shift rows like a loom, treble triggers signal flashes.*
 
 This mechanic connects to our project by turning Ding Yi’s static system into a **reactive instrument**, where the ordered grid is no longer just a surface, but a physical structure that vibrates, stretches, and reacts to the pulse of the sound.
 
 ## Part 3: Putting It Together
-Our project is like weaving a "breathing" digital textile on a shared canvas.
-The grid of crosses is our foundation. Xueqin acts as the weaver, letting the user slide the mouse to change the color mood smoothly. Ying Li breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. Cayla transforms the grid into a rhythmic, elastic loom. Finally, Nicole uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
-By sharing the same grid system, our mechanics layer on top of each other, turning a static painting into a responsive, evolving, and multisensory experience.
+
+Our project is like **weaving a "breathing" digital textile** on a shared canvas.
+
+The **grid of crosses** is our foundation. **Xueqin** acts as the weaver, letting the user slide the mouse to change the color mood smoothly. **Ying Li** breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. **Cayla** transforms the grid into a rhythmic, elastic loom. Finally, **Nicole** uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
+
+By **sharing the same grid system**, our mechanics layer on top of each other, turning a static painting into a **responsive, evolving, and multisensory experience**.
