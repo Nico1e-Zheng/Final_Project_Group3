@@ -47,15 +47,10 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 
 ### Mechanic 4: Audio
 
-For my audio mechanic, I want to make the grid respond to music in a way that feels physical, as if the cross-based surface is vibrating or being pulled by the sound. The viewer loads a music file into the sketch, and the grid reacts to it in real time. I will use p5.FFT to split the audio into three frequency bands — bass, mid, and treble — and each one will drive a different kind of movement in the grid.
+The audio mechanic transforms the grid into a rhythmic, elastic loom that responds to music in real time, shifting the focus from organic drift to structural tension. While the Perlin noise creates subtle, random imperfections, my mechanic uses p5.FFT to drive macro-level movements that follow the music’s energy.
+The bass frequencies control the "Global Elasticity" of the grid: on every heavy beat, the entire grid will "pinch" toward the center or expand outward before snapping back, making the digital textile feel like it’s gasping or pulsing in sync with the rhythm. The mid-range frequencies handle "Shearing and Alignment": instead of random drifting, the mid-tones will cause even and odd rows of crosses to slide horizontally in opposite directions, mimicking the mechanical shifting of threads on a loom. Finally, the treble frequencies trigger "Signal Flashes": high-pitched sounds will cause individual crosses to flicker or change stroke weight instantly, adding a sharp, digital "glitch" texture that contrasts with the smooth movements elsewhere.
+This mechanic connects to our project by turning Ding Yi’s static system into a reactive instrument, where the ordered grid is no longer just a surface, but a physical structure that vibrates, stretches, and reacts to the pulse of the sound.
 
-The bass part would control the biggest, most sudden changes. When a heavy beat hits, the grid cells expand outward and then snap back into place. This creates a pulse across the whole canvas, like the woven surface being struck and briefly losing its structure before returning to order. This connects to Ding Yi's idea of a rigid system that still carries tension beneath the surface.
-
-The mid frequencies would create a slower, spreading ripple that moves outward from the centre of the grid. Instead of the whole canvas reacting at once, the change travels across the cells gradually, similar to how a single thread pulled in a woven fabric causes a wave of movement across the surrounding area.
-
-The high frequencies would affect individual cells in a smaller and more scattered way, causing certain crosses or X marks to flicker, shift slightly, or brighten for a moment. This mirrors the visual noise that appears in Ding Yi's work when viewed up close, where small irregularities exist within an otherwise controlled pattern.
-
-When the music is dense and loud, the grid is constantly moving and unstable. When the music quiets down, the surface settles back into stillness. I hope this mechanic can show how sound and structure can interact, where the ordered grid becomes something reactive and alive depending on what is playing.
 
 ![Audio diagram](readmeImages/image.png)
 
