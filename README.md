@@ -45,7 +45,7 @@ Depending on how our group interprets the chosen artwork, this could take two fo
 
 If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
 
-<img src="readmeImages/enigmatriz-ascii-texture.webp" width="350">
+<img src="readmeImages/enigmatriz-ascii-texture.webp" width="400">
 
 *Cracking concept reference — characters used as visual texture (Enigmatriz).*
 
