@@ -1,6 +1,6 @@
 # Final_Project_Group3
 
-# Part 1: Project Direction
+## Part 1: Project Direction
 
 Our team has chosen to reinterpret *Appearance of Crosses* by 
 :contentReference[oaicite:0]{index=0}, 
@@ -18,7 +18,7 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 
 ---
 
-## References
+ References
 
 1. *Appearance of Crosses* — Ding Yi  
    [Artsy Artwork Page](https://www.artsy.net/artwork/ding-yi-ding-yi-appearance-of-crosses-2?utm_source=chatgpt.com)
@@ -39,8 +39,11 @@ We plan to take Ding Yi's core visual elements — such as crosses, repetition, 
 - **Ying Li** — Perlin Noise and Randomness  
 - **Cayla Wang** — Audio
 
+### Mechanic 1: User Input
 
+### Mechanic 2: Time-based
 
+### Mechanic 3: Perlin Noise and Randomness 
 
 ### Mechanic 4: Audio
 
