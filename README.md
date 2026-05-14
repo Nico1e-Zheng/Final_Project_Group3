@@ -26,8 +26,8 @@ We plan to take Ding Yi's core visual elements, such as crosses, repetition, den
 
 ## Part 2: Team Members and Mechanic Ownership
 ### Mechanic 1: User Input: Xueqin Zhao
-The user input mechanic allows the viewer to control the overall colour mood of the grid through mouse movement. When the viewer moves the mouse from left to right across the canvas, the main colour palette of the grid gradually shifts between colours inspired by Ding Yi’s artwork, such as yellow, pink, blue, red and warm white. The colour transition will be smooth rather than sudden, so the image feels like a moving digital textile rather than a simple colour switch.
-The viewer can also click the mouse to lock the current colour palette. When the colour is locked, mouse movement will no longer change the colours. Clicking again will unlock the palette and return control to the viewer. This keeps the interaction simple and easy to understand.
+The user input mechanic allows the viewer to control the overall **colour mood** of the grid through **mouse movement**. When the viewer moves the mouse from left to right across the canvas, the main colour palette of the grid gradually shifts between colours inspired by Ding Yi’s artwork, such as **yellow, pink, blue, red and warm white**. The colour transition will be smooth rather than sudden, so the image feels like a moving digital textile rather than a simple colour switch.
+The viewer can also **click the mouse** to **lock the current colour palette**. When the colour is locked, mouse movement will no longer change the colours. Clicking again will **unlock the palette** and return control to the viewer. This keeps the interaction simple and easy to understand.
 This mechanic connects to our project vision because Ding Yi’s work is built from repeated cross marks, dense grids and layered colour systems. My mechanic does not change the structure of the grid. Instead, it allows the viewer to influence the atmosphere of the artwork while keeping the repeated cross-based system recognisable.
 
 <img src="readmeImages/user-input.png">
@@ -45,7 +45,7 @@ Depending on how our group interprets the chosen artwork, this could take two fo
 
 If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
 
-<img src="readmeImages/enigmatriz-ascii-texture.webp" width="300">
+<img src="readmeImages/enigmatriz-ascii-texture.webp" width="350">
 
 *Cracking concept reference — characters used as visual texture (Enigmatriz).*
 
@@ -56,9 +56,13 @@ I'm not entirely sure how complex this will be to implement, but some of the cor
 > Image sources: Flip card sketch generated using [ASCII Lab](https://ascii-lab.sg.agentos-app.run) | Cracking concept reference from [Enigmatriz](https://enigmatriz.com/artworks/ascii-art)
 
 ### Mechanic 3: Perlin Noise and Randomness: Ying Li
-The Perlin noise and randomness mechanic will make the cross-based grid feel less fixed and more like a living digital textile. Ding Yi’s artwork appears highly ordered from a distance, but when viewed closely, the repeated cross marks create a dense and slightly irregular surface. I want to translate this quality into code by using random values and Perlin noise to create controlled imperfections inside the grid.
-The random part will decide which cells receive small variations. For example, some crosses may become slightly larger, smaller, brighter or denser than others. Some areas may contain more marks, while other areas may feel more open. These changes will not completely break the grid. Instead, they will create small interruptions, similar to uneven stitches, woven threads or handmade variations within a repeated pattern.
-The Perlin noise part will control slow and smooth movement. Instead of making the cells jump randomly, selected marks or thread-like lines will gently drift, bend or breathe over time. This mechanic connects to our project because it turns Ding Yi’s static cross structure into a more organic digital fabric, where order and randomness exist together.
+The **Perlin noise and randomness mechanic** will make the cross-based grid feel less fixed and more like a **living digital textile**. Ding Yi’s artwork appears highly ordered from a distance, but when viewed closely, the repeated cross marks create a dense and slightly irregular surface. I want to translate this quality into code by using **random values and Perlin noise** to create **controlled imperfections** inside the grid.
+The **random part** will decide which cells receive small variations. For example, some crosses may become slightly larger, smaller, brighter or denser than others. Some areas may contain more marks, while other areas may feel more open. These changes will not completely break the grid. Instead, they will create small interruptions, similar to **uneven stitches, woven threads or handmade variations** within a repeated pattern.
+The **Perlin noise part** will control slow and smooth movement. Instead of making the cells jump randomly, selected marks or thread-like lines will gently **drift, bend or breathe over time**. This mechanic connects to our project because it turns Ding Yi’s static cross structure into a more **organic digital fabric**, where **order and randomness exist together**.
+
+<img src="readmeImages/perlin-noise.jpg">
+
+*Perlin noise mechanic — ordered grid → random variation → smooth breathing motion.*
 
 ### Mechanic 4: Audio: Cayla Wang
 The audio mechanic transforms the grid into a **rhythmic, elastic loom** that responds to music in real time, shifting the focus from organic drift to **structural tension**. While the Perlin noise creates subtle, random imperfections, my mechanic uses `p5.FFT` to drive macro-level movements that follow the music’s energy.
