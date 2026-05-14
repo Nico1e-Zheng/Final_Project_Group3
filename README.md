@@ -37,7 +37,7 @@ Depending on how our group interprets the chosen artwork, this could take two fo
 
 If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
 
-<img src="readmeImages/ascii-sketch.png" width="350">
+<img src="readmeImages/ascii-sketch.png" width="400">
 *Before/after comparison — geometric crosses transformed into text characters with colours preserved.*
 
 In both cases, the original colours would stay the same throughout, so the image remains recognisable even after the transformation. Once the animation finishes, it would reverse and loop back to the original artwork.
@@ -54,7 +54,7 @@ The audio mechanic transforms the grid into a **rhythmic, elastic loom** that re
 
 The **bass** frequencies control the **"Global Elasticity"** of the grid: on every heavy beat, the entire grid will "pinch" toward the center or expand outward before snapping back, making the digital textile feel like it’s gasping or pulsing in sync with the rhythm. The **mid-range** frequencies handle **"Shearing and Alignment"**: instead of random drifting, the mid-tones will cause even and odd rows of crosses to slide horizontally in opposite directions, mimicking the mechanical shifting of threads on a loom. Finally, the **treble** frequencies trigger **"Signal Flashes"**: high-pitched sounds will cause individual crosses to flicker or change stroke weight instantly, adding a sharp, digital "glitch" texture that contrasts with the smooth movements elsewhere.
 
-<img src="readmeImages/audio-mechanic.png" width="600">
+<img src="readmeImages/audio-mechanic.png">
 
 *Bass controls grid elasticity, mids shift rows like a loom, treble triggers signal flashes.*
 
