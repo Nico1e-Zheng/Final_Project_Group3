@@ -57,7 +57,7 @@ The high frequencies would affect individual cells in a smaller and more scatter
 
 When the music is dense and loud, the grid is constantly moving and unstable. When the music quiets down, the surface settles back into stillness. I hope this mechanic can show how sound and structure can interact, where the ordered grid becomes something reactive and alive depending on what is playing.
 
-![Audio diagram](readmeImages/caylaimage.png)
+![Audio diagram](readmeImages/image.png)
 
 ## Part 3: Putting It Together
 
