@@ -47,7 +47,7 @@ let timeTonePalettes = [
       oceanBlue: [103, 142, 182],
       softOrange: [241, 186, 112],
       goldenOrange: [235, 145, 84],
-      pinkPurple: [196, 148, 159],
+      pinkPurple: [180, 120, 175],
       sunYellow: [255, 238, 160],
       foamGrey: [180, 180, 220],
       creamYellow: [250, 220, 190]
