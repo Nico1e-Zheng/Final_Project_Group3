@@ -71,7 +71,7 @@ let timeTonePalettes = [
 
 
 // draw()
-function draw() {
+function drawUserInput() {
   background(250, 240, 235);
 
   drawToneSkyBackground();

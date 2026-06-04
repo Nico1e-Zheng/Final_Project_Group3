@@ -86,6 +86,12 @@ function draw(){
   //draw top details
   drawSkyOverlap();
   drawOceanOverlap();
+
+  //call each mechanic here
+  //drawTimeBased();
+  //drawUserInput();
+  //drawNoiseMechanic();
+  //drawAudioMechanic();
 }
 
 function buildGrid() {
