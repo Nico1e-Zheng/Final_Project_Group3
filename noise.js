@@ -1,4 +1,3 @@
-//STEP 1
 //controls ocean movement, reflection lines and sea wave transformation
 
 let noiseTime = 0;
@@ -14,7 +13,9 @@ function drawNoiseMechanic() {
   for (let segment of segmentArr) {
     let cy = segment.y + segment.height / 2;
 
-    if (cy >= horizonY) {
+    if (cy < horizonY) {
+      drawOriginalBasedSkyChange(segment);
+    } else {
       drawNoiseOceanCell(segment);
     }
   }
@@ -196,4 +197,103 @@ function drawMovingWaveCross(segment) {
   line(0, -h * 0.25 * scaleAmount, 0, h * 0.25 * scaleAmount);
 
   pop();
+}
+
+// large slow cloud movement
+function drawOriginalBasedSkyChange(segment) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+
+  let gridX = x / w;
+  let gridY = y / h;
+
+  let cloudMove = noise(
+    gridX * 0.035 - noiseTime * 0.18,
+    gridY * 0.035,
+    noiseTime * 0.08
+  );
+
+  let breathe = map(sin(noiseTime * 0.8), -1, 1, 0.35, 0.75);
+  if (segment.colorName == "skyBlue") {
+     let blueBreath = map(
+     sin(noiseTime * 0.5 + gridX * 0.05),
+     -1,
+     1,
+     180,
+     255
+   );
+
+  noStroke();
+  fill(146, 178, 221, blueBreath);
+  rect(x, y, w, h);
+}
+
+  if (segment.colorName == "goldenOrange") {
+    let crossAppear = noise(
+      gridX * 0.04 - noiseTime * 0.15,
+      gridY * 0.04,
+      noiseTime * 0.1
+    );
+
+    if (crossAppear > 0.42) {
+      drawSoftOriginalCross(segment, crossAppear);
+    } else {
+      noStroke();
+      fill(getPaletteColor("softOrange"));
+      rect(x, y, w, h);
+    }
+  }
+
+  if (segment.colorName == "pinkPurple") {
+    let lineAppear = noise(
+      gridX * 0.04 - noiseTime * 0.12 + 20,
+      gridY * 0.04 + 20,
+      noiseTime * 0.1
+    );
+
+    if (lineAppear > 0.45) {
+      drawSoftOriginalLines(segment, lineAppear);
+    } else {
+      noStroke();
+      fill(getPaletteColor("softOrange"));
+      rect(x, y, w, h);
+    }
+  }
+}
+
+function drawSoftOriginalCross(segment, amount) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+
+  let moveY = sin(noiseTime * 1.2 + x * 0.01) * h * 0.08;
+  let scaleAmount = map(amount, 0.42, 1, 0.55, 1.1);
+
+  stroke(getPaletteColor("goldenOrange"));
+  strokeWeight(2);
+
+  push();
+  translate(x + w / 2, y + h / 2 + moveY);
+  line(-w * 0.25 * scaleAmount, 0, w * 0.25 * scaleAmount, 0);
+  line(0, -h * 0.25 * scaleAmount, 0, h * 0.25 * scaleAmount);
+  pop();
+}
+
+function drawSoftOriginalLines(segment, amount) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+
+  let moveX = sin(noiseTime * 1.1 + y * 0.01) * w * 0.08;
+
+  stroke(getPaletteColor("pinkPurple"));
+  strokeWeight(1);
+
+  line(x + w * 0.16 + moveX, y + h * 0.3, x + w * 0.84 + moveX, y + h * 0.3);
+  line(x + w * 0.16 + moveX, y + h * 0.5, x + w * 0.84 + moveX, y + h * 0.5);
+  line(x + w * 0.16 + moveX, y + h * 0.7, x + w * 0.84 + moveX, y + h * 0.7);
 }
