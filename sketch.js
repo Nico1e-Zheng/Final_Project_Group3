@@ -85,7 +85,9 @@ function draw(){
 
   //draw top details
   drawSkyOverlap();
-  drawOceanOverlap();
+
+  //noise controls the ocean layer
+  drawNoiseMechanic();
 
   //call each mechanic here
   //drawTimeBased();
