@@ -46,7 +46,7 @@ function setup() {
     new PaletteColor("oceanBlue", color(103, 142, 182)),
     new PaletteColor("softOrange", color(241, 186, 112)),
     new PaletteColor("goldenOrange", color(235, 145, 84)),
-    new PaletteColor("pinkPurple", color(196, 148, 159)),
+    new PaletteColor("pinkPurple", color(180, 120, 175)),
     new PaletteColor("sunYellow", color(255, 238, 160)),
     new PaletteColor("foamGrey", color(180, 180, 220)),
     new PaletteColor("creamYellow", color(250, 220, 190))
