@@ -58,6 +58,7 @@ function setup() {
   let size = Math.min(windowWidth, windowHeight);
   createCanvas(size, size);
   buildGrid();
+  setupAudioMechanic();
 }
 
 //keep the canvas resizing with the window
@@ -93,7 +94,7 @@ function draw(){
   //drawTimeBased();
   //drawUserInput();
   //drawNoiseMechanic();
-  //drawAudioMechanic();
+  drawAudioMechanic();
 }
 
 function buildGrid() {
