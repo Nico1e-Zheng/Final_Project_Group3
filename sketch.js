@@ -73,21 +73,26 @@ function draw(){
   //create a soft color canvas as base
   background(250, 240, 235);
 
+  //update the current tone based on time and user input
+  updateToneChange();
+
   //each piece of the artwork called here by its function name
 
   //draw base layers first
-  drawSkyBackground();
-  drawOceanBackground();
+  drawToneSkyBackground();
+  drawToneOceanBackground();
 
   //add warm base so blue does not show through warm shapes
-  drawWarmSkyBase();
-  drawWarmOceanBase();
-  drawSunGlow();
+  drawToneWarmSkyBase();
+  drawToneWarmOceanBase();
+  drawToneSunGlow();
 
   //draw top details
-  drawSkyOverlap();
+  drawToneSkyOverlap();
 
   //noise controls the ocean layer
+  drawToneOceanOverlap();
+
   drawNoiseMechanic();
 
   //call each mechanic here
