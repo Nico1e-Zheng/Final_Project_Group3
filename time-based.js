@@ -1,7 +1,95 @@
-//STEP 1
-//replaces the shaped-grid with ASCII characters
+
+//STEP 1: replaces the shaped-grid with ASCII characters
+//260605 remove the base rects(except sun and sunGlow) to prevent overlap the noise animation
+
+//STEP 2: spreading animation interact with noise
+//spread progress accumulates over time, speed influenced by noise waves
+let spreadProgress = 0;
+
+//after 3 sec the artwork becomes dynamic
+let startDelay = 180;
+
+//AI usage: the ring-based spreading method (isInTimeSpread) was developed with AI assistance.
+//it uses dist() to measure each cell's distance from the centre, and a moving ring
+//determines which cells show ASCII characters at any moment.
+//the ring loops so the artwork cycles between noise shapes and ASCII characters.
+
+//the wave expands from the centre and loops, so animation switch between ASCII and noise
+function isInTimeSpread(segment) {
+  //nothing spreads during the delay
+  if (frameCount < startDelay) {
+    return false;
+  }
+
+  let cx = segment.x + segment.width / 2;
+  let cy = segment.y + segment.height / 2;
+
+  let spreadCenterX = width / 2;
+  let spreadCenterY = height * horizonLine;
+
+  let d = dist(cx, cy, spreadCenterX, spreadCenterY);
+  let maxD = dist(0, 0, spreadCenterX, spreadCenterY);
+
+  let spreadRadius = spreadProgress * maxD;
+  let ringWidth = maxD * 0.25;
+
+  return abs(d - spreadRadius) < ringWidth;
+}
+
+//the noise waves make it faster or slower
+function updateSpreadProgress() {
+  //wait before starting
+  if (frameCount < startDelay) {
+    return;
+  }
+
+  //noiseTime is from noise.js, sin gives a wave that goes -1 to 1
+  let waveInfluence = map(sin(noiseTime * 5), -1, 1, 0.5, 1.5);
+  spreadProgress = spreadProgress + waveInfluence * 0.001;
+
+  //loop back to 0 when it reaches 1
+  if (spreadProgress > 1) {
+    spreadProgress = 0;
+  }
+}
+
+//make the ASCII characters float up and down with the wave
+//ocean characters follow the wave data from noise.js and sky ones follow the cloud drift from noise.js
+function getWaveOffset(segment) {
+  let horizonY = height * horizonLine;
+  let cy = segment.y + segment.height / 2;
+
+  if (cy >= horizonY) {
+    let waveAmount = getWaveAmount(segment);
+    return map(waveAmount, 0, 1, segment.height * 0.1, -segment.height * 0.12);
+  } else {
+    //sky: movement syncs with noise's cloud drift using noiseTime from noise.js
+    return sin(noiseTime * 1.2 + segment.x * 0.01) * segment.height * 0.08;
+  }
+}
+
+//check if a character should appear, using the same values from noise.js so ASCII gaps match the noise gaps
+function shouldCharAppear(segment) {
+  let gridX = segment.x / segment.width;
+  let gridY = segment.y / segment.height;
+
+  if (segment.colorName == "goldenOrange") {
+    let appear = noise(gridX * 0.04 - noiseTime * 0.15, gridY * 0.04, noiseTime * 0.1);
+    return appear > 0.42;
+  }
+  if (segment.colorName == "pinkPurple") {
+    let appear = noise(gridX * 0.04 - noiseTime * 0.12 + 20, gridY * 0.04 + 20, noiseTime * 0.1);
+    return appear > 0.45;
+  }
+  //other cell types always show
+  return true;
+}
 
 function drawTimeBased() {
+  //replaces the shaped-grid with ASCII characters
+  //add a new funtion
+  updateSpreadProgress();
+  
   drawSunASCII();
   drawSunGlowASCII();
   drawSkyCrossASCII();
@@ -24,17 +112,19 @@ function drawSunASCII() {
 
     if (cy < horizonY) {
       if (segment.colorName == "sunYellow") {
-        //cover the solid yellow rectangle with the warm base color
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        //draw @ in sun color on top
-        fill(segment.color);
-        //Sets the way text is aligned when text() is called, reference: https://p5js.org/reference/p5/textAlign/
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 0.9);
-        text("@", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          //cover the sun glow dots underneath
+          noStroke();
+          fill(getPaletteColor("softOrange"));
+          rect(segment.x, segment.y, segment.width, segment.height);
+
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 0.9);
+          text("@", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
@@ -58,26 +148,30 @@ function drawSunGlowASCII() {
         }
       }
     }
-    
+
     if (nearSun) {
-      if (segment.colorName == "softOrange") {
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+      if (isInTimeSpread(segment)) {
+        let moveY = getWaveOffset(segment);
 
-        fill(getPaletteColor("creamYellow"));
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.2);
-        text("::", cx, cy);
-      } else if (segment.colorName == "creamYellow") {
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (segment.colorName == "softOrange") {
+          noStroke();
+          fill(getPaletteColor("softOrange"));
+          rect(segment.x, segment.y, segment.width, segment.height);
 
-        fill(getPaletteColor("creamYellow"));
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.2);
-        text("::", cx, cy);
+          fill(getPaletteColor("creamYellow"));
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1.2);
+          text("::", cx, cy + moveY);
+        } else if (segment.colorName == "creamYellow") {
+          noStroke();
+          fill(getPaletteColor("softOrange"));
+          rect(segment.x, segment.y, segment.width, segment.height);
+
+          fill(getPaletteColor("creamYellow"));
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1.2);
+          text("::", cx, cy + moveY);
+        }
       }
     }
   }
@@ -92,14 +186,17 @@ function drawSkyCrossASCII() {
 
     if (cy < horizonY) {
       if (segment.colorName == "goldenOrange") {
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          if (shouldCharAppear(segment)) {
+            let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1);
-        text("+", segment.x + segment.width / 2, segment.y + segment.height / 2);
+            noStroke();
+            fill(segment.color);
+            textAlign(CENTER, CENTER);
+            textSize(segment.width * 1);
+            text("+", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+          }
+        }
       }
     }
   }
@@ -114,14 +211,17 @@ function drawSkyLinesASCII() {
 
     if (cy < horizonY) {
       if (segment.colorName == "pinkPurple") {
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          if (shouldCharAppear(segment)) {
+            let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1);
-        text("=", segment.x + segment.width / 2, segment.y + segment.height / 2);
+            noStroke();
+            fill(segment.color);
+            textAlign(CENTER, CENTER);
+            textSize(segment.width * 1);
+            text("=", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+          }
+        }
       }
     }
   }
@@ -136,14 +236,15 @@ function drawOceanPurpleASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "pinkPurple") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1);
-        text("~", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1);
+          text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
@@ -158,14 +259,15 @@ function drawOceanSunASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "goldenOrange") {
-        noStroke();
-        fill(getPaletteColor("softOrange"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.5);
-        text("*", segment.x + segment.width / 2, segment.y + segment.height * 0.8);
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1.5);
+          text("*", segment.x + segment.width / 2, segment.y + segment.height * 0.8 + moveY);
+        }
       }
     }
   }
@@ -180,14 +282,15 @@ function drawOceanYellowASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "sunYellow") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.2);
-        text("-", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1.2);
+          text("-", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
@@ -202,14 +305,15 @@ function drawOceanBlueASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "skyBlue") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.2);
-        text("~", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1.2);
+          text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
@@ -224,20 +328,22 @@ function drawOceanDarkASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "darkBlue") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1);
-        text("#", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1);
+          text("#", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
 }
 
-//replace foamGrey smaller squares in the ocean with "%"
+//replace foamGrey in the ocean with morphing ASCII
+//the character changes with spreadProgress so it evolves over time
 function drawOceanFoamASCII() {
   let horizonY = height * horizonLine;
 
@@ -246,20 +352,28 @@ function drawOceanFoamASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "foamGrey") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1);
-        text("%", segment.x + segment.width / 2, segment.y + segment.height / 2);
+          //character evolves with time progress: o / * %
+          //floor() rounds down to a whole number, % loops the index back to 0-3
+          //reference: https://p5js.org/reference/p5/floor/
+          let foamChars = ["o", "/", "*", "%"];
+          let charIndex = floor(spreadProgress * 8) % 4;
+          let foamChar = foamChars[charIndex];
+
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1);
+          text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
 }
 
-//replace creamYellow small dots in the ocean with "."
+//replace creamYellow in the ocean with growing bubble ASCII
 function drawOceanCreamASCII() {
   let horizonY = height * horizonLine;
 
@@ -268,14 +382,21 @@ function drawOceanCreamASCII() {
 
     if (cy >= horizonY) {
       if (segment.colorName == "creamYellow") {
-        noStroke();
-        fill(getPaletteColor("oceanBlue"));
-        rect(segment.x, segment.y, segment.width, segment.height);
+        if (isInTimeSpread(segment)) {
+          let moveY = getWaveOffset(segment);
 
-        fill(segment.color);
-        textAlign(CENTER, CENTER);
-        textSize(segment.width * 1.5);
-        text(".", segment.x + segment.width / 2, segment.y + segment.height * 0.2);
+          //bubble grows with time progress: . o 0 O
+          //floor() rounds down to a whole number, % loops the index back to 0-3
+          let bubbleChars = [".", "o", "0", "O"];
+          let charIndex = floor(spreadProgress * 8) % 4;
+          let foamChar = bubbleChars[charIndex];
+
+          noStroke();
+          fill(segment.color);
+          textAlign(CENTER, CENTER);
+          textSize(segment.width * 1);
+          text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
+        }
       }
     }
   }
