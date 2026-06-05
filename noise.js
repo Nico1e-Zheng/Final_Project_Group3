@@ -6,6 +6,7 @@ let oceanNoiseScale = 0.08;
 let reflectionMoveStrength = 0.45;
 let foamNoiseScale = 0.12;
 
+
 function drawNoiseMechanic() {
   noiseTime += noiseSpeed;
   let horizonY = height * horizonLine;
@@ -206,31 +207,56 @@ function drawOriginalBasedSkyChange(segment) {
   let w = segment.width;
   let h = segment.height;
 
+  let cx = x + w / 2;
+  let cy = y + h / 2;
+
   let gridX = x / w;
   let gridY = y / h;
 
-  let cloudMove = noise(
-    gridX * 0.035 - noiseTime * 0.18,
+  let sunX = width * 0.5;
+  let sunY = height * 0.34;
+
+  let d = dist(cx, cy, sunX, sunY);
+  let radial = map(d, 0, width * 0.75, 1, 0);
+  radial = constrain(radial, 0, 1);
+
+  let softNoise = noise(
+    gridX * 0.035 + noiseTime * 0.08,
     gridY * 0.035,
-    noiseTime * 0.08
+    noiseTime * 0.05
   );
 
-  let breathe = map(sin(noiseTime * 0.8), -1, 1, 0.35, 0.75);
-  if (segment.colorName == "skyBlue") {
-     let blueBreath = map(
-     sin(noiseTime * 0.5 + gridX * 0.05),
-     -1,
-     1,
-     180,
-     255
-   );
+    let spread = radial * 0.75 + softNoise * 0.25;
 
-  noStroke();
-  fill(146, 178, 221, blueBreath);
-  rect(x, y, w, h);
-}
+    if (segment.colorName == "skyBlue") {
+  // large area movement, similar to orange crosses
+    let cloudAppear = noise(
+      gridX * 0.035 - noiseTime * 0.12,
+      gridY * 0.035,
+      noiseTime * 0.08
+    );
 
-  if (segment.colorName == "goldenOrange") {
+  // this checks nearby cells, so single blue dots are removed
+    let nearbyCloud = noise(
+      (gridX + 2) * 0.035 - noiseTime * 0.12,
+      gridY * 0.035,
+      noiseTime * 0.08
+    );
+
+  // blue appears/disappears in connected cloud blocks
+    if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
+      noStroke();
+      fill(segment.color);
+      rect(x, y, w, h);
+    } else {
+      noStroke();
+      fill(getPaletteColor("softOrange"));
+      rect(x, y, w, h);
+    }
+  }
+
+  // original orange cross change
+  else if (segment.colorName == "goldenOrange") {
     let crossAppear = noise(
       gridX * 0.04 - noiseTime * 0.15,
       gridY * 0.04,
@@ -246,7 +272,8 @@ function drawOriginalBasedSkyChange(segment) {
     }
   }
 
-  if (segment.colorName == "pinkPurple") {
+  // original pink/purple line change
+  else if (segment.colorName == "pinkPurple") {
     let lineAppear = noise(
       gridX * 0.04 - noiseTime * 0.12 + 20,
       gridY * 0.04 + 20,
@@ -261,6 +288,28 @@ function drawOriginalBasedSkyChange(segment) {
       rect(x, y, w, h);
     }
   }
+  
+else if (segment.colorName == "creamYellow") {
+  let sparkle = noise(
+    gridX * 0.08,
+    gridY * 0.08,
+    noiseTime * 0.9
+  );
+
+  if (sparkle > 0.35) {
+    let dotSize = map(sparkle, 0.35, 1, w * 0.12, w * 0.32);
+
+    noStroke();
+    fill(getPaletteColor("creamYellow"));
+
+    circle(x + w * 0.3, y + h * 0.3, dotSize);
+    circle(x + w * 0.7, y + h * 0.3, dotSize);
+    circle(x + w * 0.3, y + h * 0.7, dotSize);
+    circle(x + w * 0.7, y + h * 0.7, dotSize);
+  }
+}  
+
+
 }
 
 function drawSoftOriginalCross(segment, amount) {
