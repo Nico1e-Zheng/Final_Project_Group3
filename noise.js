@@ -1,5 +1,4 @@
 //controls ocean movement, reflection lines and sea wave transformation
-
 let noiseTime = 0;
 let noiseSpeed = 0.013;
 let oceanNoiseScale = 0.08;
@@ -173,7 +172,6 @@ function drawMorphingFoam(segment) {
     circle(-w * 0.12, h * 0.16, dotSize);
     circle(w * 0.16, h * 0.18, dotSize);
   }
-
   pop();
 }
 
@@ -196,7 +194,6 @@ function drawMovingWaveCross(segment) {
 
   line(-w * 0.25 * scaleAmount, 0, w * 0.25 * scaleAmount, 0);
   line(0, -h * 0.25 * scaleAmount, 0, h * 0.25 * scaleAmount);
-
   pop();
 }
 
@@ -209,7 +206,6 @@ function drawOriginalBasedSkyChange(segment) {
 
   let cx = x + w / 2;
   let cy = y + h / 2;
-
   let gridX = x / w;
   let gridY = y / h;
 
@@ -236,14 +232,12 @@ function drawOriginalBasedSkyChange(segment) {
       noiseTime * 0.08
     );
 
-  // this checks nearby cells, so single blue dots are removed
     let nearbyCloud = noise(
       (gridX + 2) * 0.035 - noiseTime * 0.12,
       gridY * 0.035,
       noiseTime * 0.08
     );
 
-  // blue appears/disappears in connected cloud blocks
     if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
       noStroke();
       fill(segment.color);
@@ -255,7 +249,7 @@ function drawOriginalBasedSkyChange(segment) {
     }
   }
 
-  // original orange cross change
+  // orange cross change
   else if (segment.colorName == "goldenOrange") {
     let crossAppear = noise(
       gridX * 0.04 - noiseTime * 0.15,
@@ -272,7 +266,7 @@ function drawOriginalBasedSkyChange(segment) {
     }
   }
 
-  // original pink/purple line change
+  // pink/purple line change
   else if (segment.colorName == "pinkPurple") {
     let lineAppear = noise(
       gridX * 0.04 - noiseTime * 0.12 + 20,
@@ -308,7 +302,6 @@ else if (segment.colorName == "creamYellow") {
     circle(x + w * 0.7, y + h * 0.7, dotSize);
   }
 }  
-
 
 }
 

@@ -91,8 +91,7 @@ function draw(){
   drawToneSkyOverlap();
 
   //noise controls the ocean layer
-  drawToneOceanOverlap();
-
+  //drawToneOceanOverlap();
   drawNoiseMechanic();
 
   //call each mechanic here
