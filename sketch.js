@@ -99,6 +99,11 @@ function draw(){
   //drawUserInput();
   //drawNoiseMechanic();
   drawAudioMechanic();
+
+  //draw DragPath, Dolphin and Seagull
+  drawCurrentDragPath();
+  drawDolphinAnimations();
+  drawSeagullAnimations();
 }
 
 function buildGrid() {
