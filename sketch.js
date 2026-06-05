@@ -326,7 +326,6 @@ function drawOceanOverlap() {
   }
 }
 
-
 //OVERLAP SHAPES
 //shape overlap over a printed cell
 function drawSmallerSquare(segment) {

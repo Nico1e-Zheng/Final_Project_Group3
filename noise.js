@@ -222,10 +222,69 @@ function drawOriginalBasedSkyChange(segment) {
     noiseTime * 0.05
   );
 
-    let spread = radial * 0.75 + softNoise * 0.25;
+  let spread = radial * 0.75 + softNoise * 0.25;
 
-    if (segment.colorName == "skyBlue") {
-  // large area movement, similar to orange crosses
+  let horizonY = height * horizonLine;
+  let sunCentreX = width / 2;
+  let sunCentreY = horizonY * 0.82;
+  let sunRange = width * 0.15;
+  let nearSunDots =
+    abs(cx - sunCentreX) < sunRange &&
+    cy > horizonY * 0.7 &&
+    cy < horizonY;
+
+  if (nearSunDots) {
+    // the sun body
+    if (segment.colorName == "sunYellow") {
+      drawBreathingSunCell(segment);
+      return;
+    }
+
+    // dots around the sun
+    if (
+      segment.colorName == "softOrange" ||
+      segment.colorName == "creamYellow"
+    ) {
+      // cover the old static dots
+      noStroke();
+      fill(getPaletteColor("softOrange"));
+      rect(x, y, w, h);
+
+      let dotAppear = noise(
+        gridX * 0.04 - noiseTime * 0.15,
+        gridY * 0.04,
+        noiseTime * 0.1
+      );
+
+      if (dotAppear > 0.25) {
+        let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
+
+        let pulse = map(
+          sin(sunDist * 0.07 - frameCount * 0.14),
+          -1,
+          1,
+          0.55,
+          1.3
+        );
+
+        let dotScale = map(dotAppear, 0.25, 1, 0.35, 1.05);
+        let dotSize = w * 0.38 * dotScale * pulse;
+
+        noStroke();
+        fill(getPaletteColor("creamYellow"));
+
+        circle(x + w * 0.3, y + h * 0.3, dotSize);
+        circle(x + w * 0.7, y + h * 0.3, dotSize * 0.9);
+        circle(x + w * 0.3, y + h * 0.7, dotSize * 0.85);
+        circle(x + w * 0.7, y + h * 0.7, dotSize);
+      }
+
+      return;
+    }
+  }
+
+  // blue cloud movement
+  if (segment.colorName == "skyBlue") {
     let cloudAppear = noise(
       gridX * 0.035 - noiseTime * 0.12,
       gridY * 0.035,
@@ -257,8 +316,18 @@ function drawOriginalBasedSkyChange(segment) {
       noiseTime * 0.1
     );
 
-    if (crossAppear > 0.42) {
-      drawSoftOriginalCross(segment, crossAppear);
+    let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
+    let innerRadius = width * 0.08;
+    let outerRadius = width * 0.18;
+    let sunInfluence = map(sunDist, innerRadius, outerRadius, 1, 0);
+    sunInfluence = constrain(sunInfluence, 0, 1);
+    let appearThreshold = map(sunInfluence, 0, 1, 0.42, 0.05);
+
+    if (crossAppear > appearThreshold) {
+      let crossAmount = map(crossAppear, 0, 1, 0.55, 1.15);
+      crossAmount = crossAmount * (0.75 + sunInfluence * 0.25);
+
+      drawSoftOriginalCross(segment, crossAmount);
     } else {
       noStroke();
       fill(getPaletteColor("softOrange"));
@@ -266,7 +335,6 @@ function drawOriginalBasedSkyChange(segment) {
     }
   }
 
-  // pink/purple line change
   else if (segment.colorName == "pinkPurple") {
     let lineAppear = noise(
       gridX * 0.04 - noiseTime * 0.12 + 20,
@@ -282,27 +350,12 @@ function drawOriginalBasedSkyChange(segment) {
       rect(x, y, w, h);
     }
   }
-  
-else if (segment.colorName == "creamYellow") {
-  let sparkle = noise(
-    gridX * 0.08,
-    gridY * 0.08,
-    noiseTime * 0.9
-  );
 
-  if (sparkle > 0.35) {
-    let dotSize = map(sparkle, 0.35, 1, w * 0.12, w * 0.32);
-
+  else if (segment.colorName == "creamYellow") {
     noStroke();
-    fill(getPaletteColor("creamYellow"));
-
-    circle(x + w * 0.3, y + h * 0.3, dotSize);
-    circle(x + w * 0.7, y + h * 0.3, dotSize);
-    circle(x + w * 0.3, y + h * 0.7, dotSize);
-    circle(x + w * 0.7, y + h * 0.7, dotSize);
+    fill(getPaletteColor("softOrange"));
+    rect(x, y, w, h);
   }
-}  
-
 }
 
 function drawSoftOriginalCross(segment, amount) {
@@ -338,4 +391,40 @@ function drawSoftOriginalLines(segment, amount) {
   line(x + w * 0.16 + moveX, y + h * 0.3, x + w * 0.84 + moveX, y + h * 0.3);
   line(x + w * 0.16 + moveX, y + h * 0.5, x + w * 0.84 + moveX, y + h * 0.5);
   line(x + w * 0.16 + moveX, y + h * 0.7, x + w * 0.84 + moveX, y + h * 0.7);
+}
+
+// the sun breathing movement
+function drawBreathingSunCell(segment) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+
+  let pulse = map(
+    sin(frameCount * 0.055 + x * 0.02 + y * 0.02),
+    -1,
+    1,
+    0.94,
+    1.06
+  );
+
+  let sunColor = getPaletteColor("sunYellow");
+  let warmShadowColor = getPaletteColor("goldenOrange");
+
+  // make the sun slightly darker and warmer 
+  let mixAmount = map(pulse, 0.94, 1.06, 0.35, 0.08);
+  let breathingColor = lerpColor(sunColor, warmShadowColor, mixAmount);
+
+  noStroke();
+  fill(breathingColor);
+
+  let newW = w * pulse;
+  let newH = h * pulse;
+
+  rect(
+    x + (w - newW) / 2,
+    y + (h - newH) / 2,
+    newW,
+    newH
+  );
 }
