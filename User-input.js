@@ -741,6 +741,91 @@ function getToneColor(colorName) {
   return color(r, g, b);
 }
 
+
+
+// Modified part: this object stores the current tone colors for all color names.
+// It is used as a shared color source for sketch.js, noise.js, time-based.js and audio.js.
+let activeToneColorMap = {};
+
+
+
+// Modified part: refresh all active colors based on the current toneValue.
+function refreshActiveToneColors() {
+  activeToneColorMap = {};
+
+  if (typeof timeTonePalettes == "undefined") {
+    return;
+  }
+
+  if (timeTonePalettes.length == 0) {
+    return;
+  }
+
+  let colorNames = Object.keys(timeTonePalettes[0].colors);
+
+  for (let name of colorNames) {
+    activeToneColorMap[name] = getToneColor(name);
+  }
+}
+
+
+
+// Modified part: get the color of the current tone by color name.
+// sketch.js will use this function through getPaletteColor().
+function getActiveToneColor(colorName) {
+  if (activeToneColorMap[colorName] != undefined) {
+    return activeToneColorMap[colorName];
+  }
+
+  return getToneColor(colorName);
+}
+
+
+
+// Modified part: get a current-tone color with alpha.
+function getActiveToneColorWithAlpha(colorName, alphaValue) {
+  let c = getActiveToneColor(colorName);
+  return color(red(c), green(c), blue(c), alphaValue);
+}
+
+
+
+// Modified part: update segment.color according to segment.colorName.
+// This allows noise.js and audio.js to change color without modifying those two files.
+function applyToneToSegments() {
+  refreshActiveToneColors();
+
+  if (typeof segmentArr == "undefined") {
+    return;
+  }
+
+  for (let segment of segmentArr) {
+    if (segment.colorName != undefined) {
+      segment.color = getActiveToneColor(segment.colorName);
+    }
+  }
+}
+
+
+
+// Modified part: convert a current-tone color into a CSS rgba string.
+function getToneCss(colorName, alphaValue) {
+  let c = getActiveToneColor(colorName);
+  return "rgba(" + red(c) + "," + green(c) + "," + blue(c) + "," + alphaValue + ")";
+}
+
+
+
+// Modified part: make the audio button follow the current tone.
+// This only changes the button UI, not the seagull or dolphin colors.
+function updateToneUI() {
+  if (typeof audioButton != "undefined" && audioButton) {
+    audioButton.style("background", getToneCss("creamYellow", 0.82));
+    audioButton.style("border", "1px solid " + getToneCss("darkBlue", 0.18));
+    audioButton.style("color", getToneCss("darkBlue", 1));
+  }
+}
+
 // This part directly follows and adapts the code structure from sketch.js
 // First layer: sky background
 function drawToneSkyBackground() {

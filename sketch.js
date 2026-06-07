@@ -58,7 +58,19 @@ function setup() {
   let size = Math.min(windowWidth, windowHeight);
   createCanvas(size, size);
   buildGrid();
+
+  // Modified part: after the grid is built, sync every segment color with the current tone.
+  // This makes noise.js and audio.js follow the User-input left/right tone change without editing those files.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
+
   setupAudioMechanic();
+
+  // Modified part: make the audio button follow the same tone system.
+  if (typeof updateToneUI == "function") {
+    updateToneUI();
+  }
 }
 
 //keep the canvas resizing with the window
@@ -67,14 +79,30 @@ function windowResized() {
   let size = Math.min(windowWidth, windowHeight);
   resizeCanvas(size, size);
   buildGrid();
+
+  // Modified part: keep segment colors synced after resizing and rebuilding the grid.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
 }
 
 function draw(){
-  //create a soft color canvas as base
-  background(250, 240, 235);
-
   //update the current tone based on time and user input
   updateToneChange();
+
+  // Modified part: update segment.color every frame.
+  // This is the key step that lets the colors in noise.js and audio.js change together.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
+
+  // Modified part: update interface colors, such as the audio button.
+  if (typeof updateToneUI == "function") {
+    updateToneUI();
+  }
+
+  //create a soft color canvas as base, now controlled by the current tone
+  background(getPaletteColor("creamYellow"));
 
   //each piece of the artwork called here by its function name
 
@@ -136,8 +164,13 @@ function buildGrid() {
 //given a known color name in the palette and return the color value
 function getPaletteColor(colorName) {
   
-  //idea generated with the help of Claude to solve the color conflict problem
-  //if user input has tone colors, use them first
+  // Modified part: use the current tone color from User-input first.
+  // This keeps all files using getPaletteColor() connected to the left/right key tone change.
+  if (typeof getActiveToneColor == "function") {
+    return getActiveToneColor(colorName);
+  }
+
+  //backup: if the active tone helper has not loaded yet, use getToneColor directly
   if (typeof getToneColor == "function"){
     return getToneColor(colorName);
   }
