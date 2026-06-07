@@ -79,25 +79,21 @@ function draw(){
   //each piece of the artwork called here by its function name
 
   //draw base layers first
-  drawToneSkyBackground();
-  drawToneOceanBackground();
+  drawSkyBackground();
+  drawOceanBackground();
 
   //add warm base so blue does not show through warm shapes
-  drawToneWarmSkyBase();
-  drawToneWarmOceanBase();
-  drawToneSunGlow();
+  drawWarmSkyBase();
+  drawWarmOceanBase();
+  drawSunGlow();
 
   //draw top details
-  drawToneSkyOverlap();
-
-  //noise controls the ocean layer
-  //drawToneOceanOverlap();
-  drawNoiseMechanic();
+  drawSkyOverlap();
 
   //call each mechanic here
-  //drawTimeBased();
+  drawNoiseMechanic();
+  drawTimeBased();
   //drawUserInput();
-  //drawNoiseMechanic();
   drawAudioMechanic();
 
   //draw DragPath, Dolphin and Seagull
@@ -139,6 +135,13 @@ function buildGrid() {
 //helper function written with the help of Claude
 //given a known color name in the palette and return the color value
 function getPaletteColor(colorName) {
+  
+  //idea generated with the help of Claude to solve the color conflict problem
+  //if user input has tone colors, use them first
+  if (typeof getToneColor == "function"){
+    return getToneColor(colorName);
+  }
+
   for (let item of colorPalette) {
     if (item.name == colorName) {
       return item.color;
@@ -183,7 +186,7 @@ function drawSkyBackground() {
     let cy = segment.y + segment.height / 2;
     if (cy < horizonY) {
       noStroke();
-      fill(skyBase);
+      fill(getPaletteColor("skyBlue"));
       rect(segment.x, segment.y, segment.width, segment.height);
     }
   }
@@ -196,7 +199,7 @@ function drawOceanBackground() {
     let cy = segment.y + segment.height / 2;
     if (cy >= horizonY) {
       noStroke();
-      fill(oceanBase);
+      fill(getPaletteColor("oceanBlue"));
       rect(segment.x, segment.y, segment.width, segment.height);
     }
   }
@@ -285,8 +288,12 @@ function drawSkyOverlap() {
     let cy = segment.y + segment.height / 2;
 
     if (cy < horizonY) {
+
+      if (isInTimeSpread(segment)) {
+        continue;
+      }
       noStroke();
-      fill(segment.color);
+      fill(getPaletteColor(segment.colorName));
 
       if (segment.colorName == "goldenOrange") {
         drawCross(segment);
@@ -308,7 +315,7 @@ function drawOceanOverlap() {
 
     if (cy >= horizonY) {
       noStroke();
-      fill(segment.color);
+      fill(getPaletteColor(segment.colorName));
 
       if (segment.colorName == "darkBlue") {
         drawCross(segment);
@@ -340,7 +347,7 @@ function drawSmallerSquare(segment) {
   let h = segment.height;
 
   noStroke();
-  fill(segment.color);
+  fill(getPaletteColor(segment.colorName));
   rect(x + w * 0.18, y + h * 0.18, w * 0.64, h * 0.64);
 }
 
@@ -372,7 +379,7 @@ function drawSmallDot(segment) {
   let h = segment.height;
 
   noStroke();
-  fill(segment.color);
+  fill(getPaletteColor(segment.colorName));
   circle(x + w / 2, y + h / 2, w * 0.36);
 }
 
@@ -382,7 +389,7 @@ function drawCross(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(2);
   line(x + w * 0.25, y + h * 0.5, x + w * 0.75, y + h * 0.5);
   line(x + w * 0.5, y + h * 0.25, x + w * 0.5, y + h * 0.75);
@@ -394,7 +401,7 @@ function drawHorizontalLines(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(1);
 
   line(x + w * 0.16, y + h * 0.3, x + w * 0.84, y + h * 0.3);
@@ -408,7 +415,7 @@ function drawReflectionLines(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(1);
 
   line(x + w * 0.18, y + h * 0.38, x + w * 0.82, y + h * 0.38);
