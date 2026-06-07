@@ -120,7 +120,7 @@ function drawSunASCII() {
           fill(getPaletteColor("softOrange"));
           rect(segment.x, segment.y, segment.width, segment.height);
 
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 0.9);
           text("@", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -191,7 +191,7 @@ function drawSkyCrossASCII() {
             let moveY = getWaveOffset(segment);
 
             noStroke();
-            fill(segment.color);
+            fill(getPaletteColor(segment.colorName));
             textAlign(CENTER, CENTER);
             textSize(segment.width * 1);
             text("+", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -216,7 +216,7 @@ function drawSkyLinesASCII() {
             let moveY = getWaveOffset(segment);
 
             noStroke();
-            fill(segment.color);
+            fill(getPaletteColor(segment.colorName));
             textAlign(CENTER, CENTER);
             textSize(segment.width * 1);
             text("=", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -240,7 +240,7 @@ function drawOceanPurpleASCII() {
           let moveY = getWaveOffset(segment);
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1);
           text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -263,7 +263,7 @@ function drawOceanSunASCII() {
           let moveY = getWaveOffset(segment);
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1.5);
           text("*", segment.x + segment.width / 2, segment.y + segment.height * 0.8 + moveY);
@@ -286,7 +286,7 @@ function drawOceanYellowASCII() {
           let moveY = getWaveOffset(segment);
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1.2);
           text("-", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -309,7 +309,7 @@ function drawOceanBlueASCII() {
           let moveY = getWaveOffset(segment);
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1.2);
           text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -332,7 +332,7 @@ function drawOceanDarkASCII() {
           let moveY = getWaveOffset(segment);
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1);
           text("#", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -363,7 +363,7 @@ function drawOceanFoamASCII() {
           let foamChar = foamChars[charIndex];
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1);
           text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
@@ -392,7 +392,7 @@ function drawOceanCreamASCII() {
           let foamChar = bubbleChars[charIndex];
 
           noStroke();
-          fill(segment.color);
+          fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
           textSize(segment.width * 1);
           text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
