@@ -5,6 +5,10 @@ let oceanNoiseScale = 0.08;
 let reflectionMoveStrength = 0.45;
 let foamNoiseScale = 0.12;
 
+// short pause first, then fade the noise mechanic in
+let noiseStartDelay = 25;
+let noiseFadeInFrames = 45;
+
 function getActiveColor(colorName) {
   if (typeof getToneColor === "function") {
     return getToneColor(colorName);
@@ -14,8 +18,31 @@ function getActiveColor(colorName) {
 }
 
 function drawNoiseMechanic() {
-  noiseTime += noiseSpeed;
+  let fadeAmount = 0;
+
+  if (frameCount > noiseStartDelay) {
+    fadeAmount = (frameCount - noiseStartDelay) / noiseFadeInFrames;
+    fadeAmount = constrain(fadeAmount, 0, 1);
+  }
+
+  // only draw the original ocean details during the short beginning transition
+  // after the noise is fully visible, stop drawing this so it will not overlap with time ASCII
+  if (fadeAmount < 1) {
+    drawOceanOverlap();
+  }
+
+  // before noise starts, only show the still original image
+  if (fadeAmount == 0) {
+    return;
+  }
+
+  // noise starts slowly, then becomes normal speed
+  noiseTime += noiseSpeed * fadeAmount;
+
   let horizonY = height * horizonLine;
+
+  push();
+  drawingContext.globalAlpha = fadeAmount;
 
   for (let segment of segmentArr) {
     let cy = segment.y + segment.height / 2;
@@ -33,6 +60,9 @@ function drawNoiseMechanic() {
       drawNoiseOceanCell(segment);
     }
   }
+
+  pop();
+  drawingContext.globalAlpha = 1;
 }
 
 //The shape and color changes of the waves
