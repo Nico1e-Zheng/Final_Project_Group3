@@ -31,7 +31,7 @@ function drawNoiseOceanCell(segment) {
 
   } else if (segment.colorName == "softOrange") {
     noStroke();
-    fill(segment.color);
+    fill(getPaletteColor(segment.colorName));
     rect(segment.x, segment.y, segment.width, segment.height);
 
   } else if (segment.colorName == "goldenOrange") {
@@ -105,7 +105,7 @@ function drawNoisyReflectionLines(segment) {
     h * reflectionMoveStrength
   );
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(1);
 
   line(
@@ -146,25 +146,25 @@ function drawMorphingFoam(segment) {
 
   if (morph < 0.25) {
     noStroke();
-    fill(segment.color);
+    fill(getPaletteColor(segment.colorName));
     circle(0, 0, w * 0.36 * scaleAmount);
 
   } else if (morph < 0.5) {
     noStroke();
-    fill(segment.color);
+    fill(getPaletteColor(segment.colorName));
     rectMode(CENTER);
     rect(0, 0, w * 0.65 * scaleAmount, h * 0.65 * scaleAmount);
     rectMode(CORNER);
 
   } else if (morph < 0.75) {
-    stroke(segment.color);
+    stroke(getPaletteColor(segment.colorName));
     strokeWeight(max(1, w * 0.08 * scaleAmount));
     line(-w * 0.25 * scaleAmount, 0, w * 0.25 * scaleAmount, 0);
     line(0, -h * 0.25 * scaleAmount, 0, h * 0.25 * scaleAmount);
 
   } else {
     noStroke();
-    fill(segment.color);
+    fill(getPaletteColor(segment.colorName));
 
     let dotSize = w * 0.22 * scaleAmount;
     circle(-w * 0.18, -h * 0.15, dotSize);
@@ -186,7 +186,7 @@ function drawMovingWaveCross(segment) {
   let moveY = map(waveAmount, 0, 1, h * 0.1, -h * 0.12);
   let scaleAmount = map(waveAmount, 0, 1, 0.75, 1.15);
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(2);
 
   push();
@@ -299,7 +299,7 @@ function drawOriginalBasedSkyChange(segment) {
 
     if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
       noStroke();
-      fill(segment.color);
+      fill(getPaletteColor(segment.colorName));
       rect(x, y, w, h);
     } else {
       noStroke();
