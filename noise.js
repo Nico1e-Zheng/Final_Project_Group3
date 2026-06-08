@@ -5,6 +5,13 @@ let oceanNoiseScale = 0.08;
 let reflectionMoveStrength = 0.45;
 let foamNoiseScale = 0.12;
 
+function getActiveColor(colorName) {
+  if (typeof getToneColor === "function") {
+    return getToneColor(colorName);
+  }
+
+  return getPaletteColor(colorName);
+}
 
 function drawNoiseMechanic() {
   noiseTime += noiseSpeed;
@@ -12,6 +19,13 @@ function drawNoiseMechanic() {
 
   for (let segment of segmentArr) {
     let cy = segment.y + segment.height / 2;
+
+    // skip cells that are in the time-based ASCII ring
+    if (typeof isInTimeSpread === "function") {
+      if (isInTimeSpread(segment)) {
+        continue;
+      }
+    }
 
     if (cy < horizonY) {
       drawOriginalBasedSkyChange(segment);
@@ -31,7 +45,7 @@ function drawNoiseOceanCell(segment) {
 
   } else if (segment.colorName == "softOrange") {
     noStroke();
-    fill(getPaletteColor(segment.colorName));
+    fill(segment.color);
     rect(segment.x, segment.y, segment.width, segment.height);
 
   } else if (segment.colorName == "goldenOrange") {
@@ -105,7 +119,7 @@ function drawNoisyReflectionLines(segment) {
     h * reflectionMoveStrength
   );
 
-  stroke(getPaletteColor(segment.colorName));
+  stroke(segment.color);
   strokeWeight(1);
 
   line(
@@ -146,25 +160,25 @@ function drawMorphingFoam(segment) {
 
   if (morph < 0.25) {
     noStroke();
-    fill(getPaletteColor(segment.colorName));
+    fill(segment.color);
     circle(0, 0, w * 0.36 * scaleAmount);
 
   } else if (morph < 0.5) {
     noStroke();
-    fill(getPaletteColor(segment.colorName));
+    fill(segment.color);
     rectMode(CENTER);
     rect(0, 0, w * 0.65 * scaleAmount, h * 0.65 * scaleAmount);
     rectMode(CORNER);
 
   } else if (morph < 0.75) {
-    stroke(getPaletteColor(segment.colorName));
+    stroke(segment.color);
     strokeWeight(max(1, w * 0.08 * scaleAmount));
     line(-w * 0.25 * scaleAmount, 0, w * 0.25 * scaleAmount, 0);
     line(0, -h * 0.25 * scaleAmount, 0, h * 0.25 * scaleAmount);
 
   } else {
     noStroke();
-    fill(getPaletteColor(segment.colorName));
+    fill(segment.color);
 
     let dotSize = w * 0.22 * scaleAmount;
     circle(-w * 0.18, -h * 0.15, dotSize);
@@ -186,7 +200,7 @@ function drawMovingWaveCross(segment) {
   let moveY = map(waveAmount, 0, 1, h * 0.1, -h * 0.12);
   let scaleAmount = map(waveAmount, 0, 1, 0.75, 1.15);
 
-  stroke(getPaletteColor(segment.colorName));
+  stroke(segment.color);
   strokeWeight(2);
 
   push();
@@ -247,7 +261,7 @@ function drawOriginalBasedSkyChange(segment) {
     ) {
       // cover the old static dots
       noStroke();
-      fill(getPaletteColor("softOrange"));
+      fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
 
       let dotAppear = noise(
@@ -271,7 +285,7 @@ function drawOriginalBasedSkyChange(segment) {
         let dotSize = w * 0.38 * dotScale * pulse;
 
         noStroke();
-        fill(getPaletteColor("creamYellow"));
+        fill(getActiveColor("creamYellow"));
 
         circle(x + w * 0.3, y + h * 0.3, dotSize);
         circle(x + w * 0.7, y + h * 0.3, dotSize * 0.9);
@@ -299,11 +313,11 @@ function drawOriginalBasedSkyChange(segment) {
 
     if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
       noStroke();
-      fill(getPaletteColor(segment.colorName));
+      fill(segment.color);
       rect(x, y, w, h);
     } else {
       noStroke();
-      fill(getPaletteColor("softOrange"));
+      fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
     }
   }
@@ -330,7 +344,7 @@ function drawOriginalBasedSkyChange(segment) {
       drawSoftOriginalCross(segment, crossAmount);
     } else {
       noStroke();
-      fill(getPaletteColor("softOrange"));
+      fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
     }
   }
@@ -346,14 +360,14 @@ function drawOriginalBasedSkyChange(segment) {
       drawSoftOriginalLines(segment, lineAppear);
     } else {
       noStroke();
-      fill(getPaletteColor("softOrange"));
+      fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
     }
   }
 
   else if (segment.colorName == "creamYellow") {
     noStroke();
-    fill(getPaletteColor("softOrange"));
+    fill(getActiveColor("softOrange"));
     rect(x, y, w, h);
   }
 }
@@ -367,7 +381,7 @@ function drawSoftOriginalCross(segment, amount) {
   let moveY = sin(noiseTime * 1.2 + x * 0.01) * h * 0.08;
   let scaleAmount = map(amount, 0.42, 1, 0.55, 1.1);
 
-  stroke(getPaletteColor("goldenOrange"));
+  stroke(getActiveColor("goldenOrange"));
   strokeWeight(2);
 
   push();
@@ -385,7 +399,7 @@ function drawSoftOriginalLines(segment, amount) {
 
   let moveX = sin(noiseTime * 1.1 + y * 0.01) * w * 0.08;
 
-  stroke(getPaletteColor("pinkPurple"));
+  stroke(getActiveColor("pinkPurple"));
   strokeWeight(1);
 
   line(x + w * 0.16 + moveX, y + h * 0.3, x + w * 0.84 + moveX, y + h * 0.3);
@@ -408,8 +422,8 @@ function drawBreathingSunCell(segment) {
     1.06
   );
 
-  let sunColor = getPaletteColor("sunYellow");
-  let warmShadowColor = getPaletteColor("goldenOrange");
+  let sunColor = getActiveColor("sunYellow");
+let warmShadowColor = getActiveColor("goldenOrange");
 
   // make the sun slightly darker and warmer 
   let mixAmount = map(pulse, 0.94, 1.06, 0.35, 0.08);
