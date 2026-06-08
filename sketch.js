@@ -58,7 +58,19 @@ function setup() {
   let size = Math.min(windowWidth, windowHeight);
   createCanvas(size, size);
   buildGrid();
+
+  // Modified part: after the grid is built, sync every segment color with the current tone.
+  // This makes noise.js and audio.js follow the User-input left/right tone change without editing those files.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
+
   setupAudioMechanic();
+
+  // Modified part: make the audio button follow the same tone system.
+  if (typeof updateToneUI == "function") {
+    updateToneUI();
+  }
 }
 
 //keep the canvas resizing with the window
@@ -67,11 +79,30 @@ function windowResized() {
   let size = Math.min(windowWidth, windowHeight);
   resizeCanvas(size, size);
   buildGrid();
+
+  // Modified part: keep segment colors synced after resizing and rebuilding the grid.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
 }
 
 function draw(){
-  //create a soft color canvas as base
-  background(250, 240, 235);
+  //update the current tone based on time and user input
+  updateToneChange();
+
+  // Modified part: update segment.color every frame.
+  // This is the key step that lets the colors in noise.js and audio.js change together.
+  if (typeof applyToneToSegments == "function") {
+    applyToneToSegments();
+  }
+
+  // Modified part: update interface colors, such as the audio button.
+  if (typeof updateToneUI == "function") {
+    updateToneUI();
+  }
+
+  //create a soft color canvas as base, now controlled by the current tone
+  background(getPaletteColor("creamYellow"));
 
   //each piece of the artwork called here by its function name
 
@@ -87,14 +118,16 @@ function draw(){
   //draw top details
   drawSkyOverlap();
 
-  //noise controls the ocean layer
-  drawNoiseMechanic();
-
   //call each mechanic here
-  //drawTimeBased();
+  drawNoiseMechanic();
+  drawTimeBased();
   //drawUserInput();
-  //drawNoiseMechanic();
   drawAudioMechanic();
+
+  //draw DragPath, Dolphin and Seagull
+  drawCurrentDragPath();
+  drawDolphinAnimations();
+  drawSeagullAnimations();
 }
 
 function buildGrid() {
@@ -130,6 +163,18 @@ function buildGrid() {
 //helper function written with the help of Claude
 //given a known color name in the palette and return the color value
 function getPaletteColor(colorName) {
+  
+  // Modified part: use the current tone color from User-input first.
+  // This keeps all files using getPaletteColor() connected to the left/right key tone change.
+  if (typeof getActiveToneColor == "function") {
+    return getActiveToneColor(colorName);
+  }
+
+  //backup: if the active tone helper has not loaded yet, use getToneColor directly
+  if (typeof getToneColor == "function"){
+    return getToneColor(colorName);
+  }
+
   for (let item of colorPalette) {
     if (item.name == colorName) {
       return item.color;
@@ -174,7 +219,7 @@ function drawSkyBackground() {
     let cy = segment.y + segment.height / 2;
     if (cy < horizonY) {
       noStroke();
-      fill(skyBase);
+      fill(getPaletteColor("skyBlue"));
       rect(segment.x, segment.y, segment.width, segment.height);
     }
   }
@@ -187,7 +232,7 @@ function drawOceanBackground() {
     let cy = segment.y + segment.height / 2;
     if (cy >= horizonY) {
       noStroke();
-      fill(oceanBase);
+      fill(getPaletteColor("oceanBlue"));
       rect(segment.x, segment.y, segment.width, segment.height);
     }
   }
@@ -276,8 +321,12 @@ function drawSkyOverlap() {
     let cy = segment.y + segment.height / 2;
 
     if (cy < horizonY) {
+
+      if (isInTimeSpread(segment)) {
+        continue;
+      }
       noStroke();
-      fill(segment.color);
+      fill(getPaletteColor(segment.colorName));
 
       if (segment.colorName == "goldenOrange") {
         drawCross(segment);
@@ -299,7 +348,7 @@ function drawOceanOverlap() {
 
     if (cy >= horizonY) {
       noStroke();
-      fill(segment.color);
+      fill(getPaletteColor(segment.colorName));
 
       if (segment.colorName == "darkBlue") {
         drawCross(segment);
@@ -322,7 +371,6 @@ function drawOceanOverlap() {
   }
 }
 
-
 //OVERLAP SHAPES
 //shape overlap over a printed cell
 function drawSmallerSquare(segment) {
@@ -332,7 +380,7 @@ function drawSmallerSquare(segment) {
   let h = segment.height;
 
   noStroke();
-  fill(segment.color);
+  fill(getPaletteColor(segment.colorName));
   rect(x + w * 0.18, y + h * 0.18, w * 0.64, h * 0.64);
 }
 
@@ -364,7 +412,7 @@ function drawSmallDot(segment) {
   let h = segment.height;
 
   noStroke();
-  fill(segment.color);
+  fill(getPaletteColor(segment.colorName));
   circle(x + w / 2, y + h / 2, w * 0.36);
 }
 
@@ -374,7 +422,7 @@ function drawCross(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(2);
   line(x + w * 0.25, y + h * 0.5, x + w * 0.75, y + h * 0.5);
   line(x + w * 0.5, y + h * 0.25, x + w * 0.5, y + h * 0.75);
@@ -386,7 +434,7 @@ function drawHorizontalLines(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(1);
 
   line(x + w * 0.16, y + h * 0.3, x + w * 0.84, y + h * 0.3);
@@ -400,7 +448,7 @@ function drawReflectionLines(segment) {
   let w = segment.width;
   let h = segment.height;
 
-  stroke(segment.color);
+  stroke(getPaletteColor(segment.colorName));
   strokeWeight(1);
 
   line(x + w * 0.18, y + h * 0.38, x + w * 0.82, y + h * 0.38);
