@@ -127,44 +127,15 @@ function drawNoisyReflectionLines(segment) {
   let h = segment.height;
   let gridX = x / w;
   let gridY = y / h;
-  let n1 = noise(
-    gridX * oceanNoiseScale,
-    gridY * oceanNoiseScale,
-    noiseTime
-  );
-  let n2 = noise(
-    gridX * oceanNoiseScale + 20,
-    gridY * oceanNoiseScale + 20,
-    noiseTime
-  );
-  let yOffset1 = map(
-    n1,
-    0,
-    1,
-    -h * reflectionMoveStrength,
-    h * reflectionMoveStrength
-  );
-  let yOffset2 = map(
-    n2,
-    0,
-    1,
-    -h * reflectionMoveStrength,
-    h * reflectionMoveStrength
-  );
+  let n1 = noise( gridX * oceanNoiseScale, gridY * oceanNoiseScale, noiseTime );
+  let n2 = noise( gridX * oceanNoiseScale + 20, gridY * oceanNoiseScale + 20, noiseTime );
+  let yOffset1 = map( n1, 0, 1, -h * reflectionMoveStrength, h * reflectionMoveStrength );
+  let yOffset2 = map( n2, 0, 1, -h * reflectionMoveStrength, h * reflectionMoveStrength);
+
   stroke(segment.color);
   strokeWeight(1);
-  line(
-    x + w * 0.18,
-    y + h * 0.38 + yOffset1,
-    x + w * 0.82,
-    y + h * 0.38 + yOffset1
-  );
-  line(
-    x + w * 0.18,
-    y + h * 0.62 + yOffset2,
-    x + w * 0.82,
-    y + h * 0.62 + yOffset2
-  );
+  line( x + w * 0.18, y + h * 0.38 + yOffset1, x + w * 0.82, y + h * 0.38 + yOffset1 );
+  line( x + w * 0.18, y + h * 0.62 + yOffset2, x + w * 0.82, y + h * 0.62 + yOffset2 );
 }
 
 function drawMorphingFoam(segment) {
@@ -262,7 +233,7 @@ function drawOriginalBasedSkyChange(segment) {
     return;
   }
   if (nearSunDots) {
-    // the sun body
+  // the sun body
     if (segment.colorName == "sunYellow") {
       drawBreathingSunCell(segment);
       return;
@@ -278,20 +249,10 @@ function drawOriginalBasedSkyChange(segment) {
       noStroke();
       fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
-      let dotAppear = noise(
-        gridX * 0.04 - noiseTime * 0.15,
-        gridY * 0.04,
-        noiseTime * 0.1
-      );
+      let dotAppear = noise( gridX * 0.04 - noiseTime * 0.15, gridY * 0.04, noiseTime * 0.1 );
       if (dotAppear > 0.25) {
         let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
-        let pulse = map(
-          sin(sunDist * 0.07 - frameCount * 0.14),
-          -1,
-          1,
-          0.55,
-          1.3
-        );
+        let pulse = map( sin(sunDist * 0.07 - frameCount * 0.14), -1, 1, 0.55, 1.3 );
         let dotScale = map(dotAppear, 0.25, 1, 0.35, 1.05);
         let dotSize = w * 0.38 * dotScale * pulse;
         noStroke();
@@ -307,16 +268,8 @@ function drawOriginalBasedSkyChange(segment) {
 
   // blue cloud movement
   if (segment.colorName == "skyBlue") {
-    let cloudAppear = noise(
-      gridX * 0.035 - noiseTime * 0.12,
-      gridY * 0.035,
-      noiseTime * 0.08
-    );
-    let nearbyCloud = noise(
-      (gridX + 2) * 0.035 - noiseTime * 0.12,
-      gridY * 0.035,
-      noiseTime * 0.08
-    );
+    let cloudAppear = noise( gridX * 0.035 - noiseTime * 0.12, gridY * 0.035, noiseTime * 0.08 );
+    let nearbyCloud = noise( (gridX + 2) * 0.035 - noiseTime * 0.12, gridY * 0.035, noiseTime * 0.08 );
     if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
       noStroke();
       fill(segment.color);
@@ -330,17 +283,14 @@ function drawOriginalBasedSkyChange(segment) {
 
   // orange cross change
   else if (segment.colorName == "goldenOrange") {
-    let crossAppear = noise(
-      gridX * 0.04 - noiseTime * 0.15,
-      gridY * 0.04,
-      noiseTime * 0.1
-    );
+    let crossAppear = noise( gridX * 0.04 - noiseTime * 0.15, gridY * 0.04, noiseTime * 0.1 );
     let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
     let innerRadius = width * 0.08;
     let outerRadius = width * 0.18;
     let sunInfluence = map(sunDist, innerRadius, outerRadius, 1, 0);
     sunInfluence = constrain(sunInfluence, 0, 1);
     let appearThreshold = map(sunInfluence, 0, 1, 0.42, 0.05);
+
     if (crossAppear > appearThreshold) {
       let crossAmount = map(crossAppear, 0, 1, 0.55, 1.15);
       crossAmount = crossAmount * (0.75 + sunInfluence * 0.25);
@@ -352,11 +302,7 @@ function drawOriginalBasedSkyChange(segment) {
     }
 
   } else if (segment.colorName == "pinkPurple") {
-    let lineAppear = noise(
-      gridX * 0.04 - noiseTime * 0.12 + 20,
-      gridY * 0.04 + 20,
-      noiseTime * 0.1
-    );
+    let lineAppear = noise( gridX * 0.04 - noiseTime * 0.12 + 20, gridY * 0.04 + 20, noiseTime * 0.1 );
     if (lineAppear > 0.45) {
       drawSoftOriginalLines(segment, lineAppear);
     } else {
@@ -406,13 +352,7 @@ function drawBreathingSunCell(segment) {
   let y = segment.y;
   let w = segment.width;
   let h = segment.height;
-  let pulse = map(
-    sin(frameCount * 0.055 + x * 0.02 + y * 0.02),
-    -1,
-    1,
-    0.94,
-    1.06
-  );
+  let pulse = map( sin(frameCount * 0.055 + x * 0.02 + y * 0.02), -1, 1, 0.94, 1.06 );
   let sunColor = getActiveColor("sunYellow");
   let warmShadowColor = getActiveColor("goldenOrange");
 
@@ -424,12 +364,7 @@ function drawBreathingSunCell(segment) {
   fill(breathingColor);
   let newW = w * pulse;
   let newH = h * pulse;
-  rect(
-    x + (w - newW) / 2,
-    y + (h - newH) / 2,
-    newW,
-    newH
-  );
+  rect( x + (w - newW) / 2, y + (h - newH) / 2, newW, newH );
 }
 
 // AI usage: the seagull wake influence method was refined with AI.
@@ -485,13 +420,7 @@ function drawSeagullSkyWake(segment, wakeAmount) {
   noStroke();
   fill(getActiveColor("softOrange"));
   rect(x, y, w, h);
-  let drift = map(
-    noise(gridX * 0.08 - noiseTime * 0.3, gridY * 0.08),
-    0,
-    1,
-    -w * 0.25,
-    w * 0.25
-  );
+  let drift = map( noise(gridX * 0.08 - noiseTime * 0.3, gridY * 0.08), 0, 1, -w * 0.25, w * 0.25 );
 
   if (segment.colorName == "skyBlue") {
     let c = getActiveColor("skyBlue");
