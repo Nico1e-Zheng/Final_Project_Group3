@@ -3,18 +3,19 @@
 //260605 remove the base rects(except sun and sunGlow) to prevent overlap the noise animation
 
 //STEP 2: spreading animation interact with noise
-//spread progress accumulates over time, speed influenced by noise waves
+//ASCII and noise take turns expanding from the sun centre in a loop
+//spread speed is influenced by noise waves, and drives the global tone colour change
 let spreadProgress = 0;
+
+//true = ASCII expanding outward
+let spreadShowsASCII = true;
 
 //after 3 sec the artwork becomes dynamic
 let startDelay = 180;
 
-//AI usage: the ring-based spreading method (isInTimeSpread) was developed with AI assistance.
-//it uses dist() to measure each cell's distance from the centre, and a moving ring
-//determines which cells show ASCII characters at any moment.
-//the ring loops so the artwork cycles between noise shapes and ASCII characters.
-
-//the wave expands from the centre and loops, so animation switch between ASCII and noise
+//AI usage: the spreading method (isInTimeSpread) was developed with Claude.
+//it uses dist() to measure each cell's distance from the centre
+//the spread expands from the centre and loops between ASCII and noise
 function isInTimeSpread(segment) {
   //nothing spreads during the delay
   if (frameCount < startDelay) {
@@ -27,13 +28,24 @@ function isInTimeSpread(segment) {
   let spreadCenterX = width / 2;
   let spreadCenterY = height * horizonLine;
 
+  //ensure the spread can reach every corner of the canvas.
   let d = dist(cx, cy, spreadCenterX, spreadCenterY);
-  let maxD = dist(0, 0, spreadCenterX, spreadCenterY);
+  let maxD1 = dist(0, 0, spreadCenterX, spreadCenterY);
+  let maxD2 = dist(width, 0, spreadCenterX, spreadCenterY);
+  let maxD3 = dist(0, height, spreadCenterX, spreadCenterY);
+  let maxD4 = dist(width, height, spreadCenterX, spreadCenterY);
+
+  let maxD = max(maxD1, maxD2, maxD3, maxD4);
 
   let spreadRadius = spreadProgress * maxD;
-  let ringWidth = maxD * 0.25;
 
-  return abs(d - spreadRadius) < ringWidth;
+  if (spreadShowsASCII) {
+    //ASCII is shown inside the spread
+    return d < spreadRadius;
+  } else {
+    //or shown outside of the spread
+    return d > spreadRadius;
+  }
 }
 
 //the noise waves make it faster or slower
@@ -45,11 +57,25 @@ function updateSpreadProgress() {
 
   //noiseTime is from noise.js, sin gives a wave that goes -1 to 1
   let waveInfluence = map(sin(noiseTime * 5), -1, 1, 0.5, 1.5);
-  spreadProgress = spreadProgress + waveInfluence * 0.001;
+  let spreadDelta = waveInfluence * 0.005;
+  spreadProgress = spreadProgress + spreadDelta;
 
-  //loop back to 0 when it reaches 1
+  //move to next tone colour based on how much the spread moved
+  toneValue = toneValue + spreadDelta * 0.4;
+
+  //reset after go through all the tone color
+  if (toneValue >= timeTonePalettes.length) {
+    toneValue = toneValue - timeTonePalettes.length;
+  }
+
+  //reset when spread fills the screen so another machanic starts
   if (spreadProgress > 1) {
     spreadProgress = 0;
+    if (spreadShowsASCII == true) {
+      spreadShowsASCII = false;
+    } else {
+      spreadShowsASCII = true;
+    }
   }
 }
 
@@ -66,6 +92,17 @@ function getWaveOffset(segment) {
     //sky: movement syncs with noise's cloud drift using noiseTime from noise.js
     return sin(noiseTime * 1.2 + segment.x * 0.01) * segment.height * 0.08;
   }
+}
+
+//make ASCII size change over time
+//AI usage: size pulsing function developed with Claude
+//uses dist() to make each cell pulse at a different rhythm
+function getASCIITextSize(segment, baseSize) {
+  let d = dist(segment.x, segment.y, width / 2, height * horizonLine);
+  let sizeWave = sin(d * 0.03 - frameCount * 0.05);
+  let sizeScale = map(sizeWave, -1, 1, 0.75, 1.35);
+
+  return segment.width * baseSize * sizeScale;
 }
 
 //check if a character should appear, using the same values from noise.js so ASCII gaps match the noise gaps
@@ -87,9 +124,9 @@ function shouldCharAppear(segment) {
 
 function drawTimeBased() {
   //replaces the shaped-grid with ASCII characters
-  //add a new funtion
   updateSpreadProgress();
   
+  //call each ASCII drawing function
   drawSunASCII();
   drawSunGlowASCII();
   drawSkyCrossASCII();
@@ -122,7 +159,7 @@ function drawSunASCII() {
 
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 0.9);
+          textSize(getASCIITextSize(segment, 0.9));
           text("@", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -160,7 +197,7 @@ function drawSunGlowASCII() {
 
           fill(getPaletteColor("creamYellow"));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1.2);
+          textSize(getASCIITextSize(segment, 1.2));
           text("::", cx, cy + moveY);
         } else if (segment.colorName == "creamYellow") {
           noStroke();
@@ -169,7 +206,7 @@ function drawSunGlowASCII() {
 
           fill(getPaletteColor("creamYellow"));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1.2);
+          textSize(getASCIITextSize(segment, 1.2));
           text("::", cx, cy + moveY);
         }
       }
@@ -193,7 +230,7 @@ function drawSkyCrossASCII() {
             noStroke();
             fill(getPaletteColor(segment.colorName));
             textAlign(CENTER, CENTER);
-            textSize(segment.width * 1);
+            textSize(getASCIITextSize(segment, 1));
             text("+", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
           }
         }
@@ -218,7 +255,7 @@ function drawSkyLinesASCII() {
             noStroke();
             fill(getPaletteColor(segment.colorName));
             textAlign(CENTER, CENTER);
-            textSize(segment.width * 1);
+            textSize(getASCIITextSize(segment, 1));
             text("=", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
           }
         }
@@ -242,7 +279,7 @@ function drawOceanPurpleASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1);
+          textSize(getASCIITextSize(segment, 1));
           text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -265,7 +302,7 @@ function drawOceanSunASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1.5);
+          textSize(getASCIITextSize(segment, 1.5));
           text("*", segment.x + segment.width / 2, segment.y + segment.height * 0.8 + moveY);
         }
       }
@@ -288,7 +325,7 @@ function drawOceanYellowASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1.2);
+          textSize(getASCIITextSize(segment, 1.2));
           text("-", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -311,7 +348,7 @@ function drawOceanBlueASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1.2);
+          textSize(getASCIITextSize(segment, 1.2));
           text("~", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -334,7 +371,7 @@ function drawOceanDarkASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1);
+          textSize(getASCIITextSize(segment, 1));
           text("#", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -365,7 +402,7 @@ function drawOceanFoamASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1);
+          textSize(getASCIITextSize(segment, 1));
           text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
@@ -394,7 +431,7 @@ function drawOceanCreamASCII() {
           noStroke();
           fill(getPaletteColor(segment.colorName));
           textAlign(CENTER, CENTER);
-          textSize(segment.width * 1);
+          textSize(getASCIITextSize(segment, 1));
           text(foamChar, segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
         }
       }
