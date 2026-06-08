@@ -6,8 +6,8 @@ let reflectionMoveStrength = 0.45;
 let foamNoiseScale = 0.12;
 
 // short pause first, then fade the noise mechanic in
-let noiseStartDelay = 25;
-let noiseFadeInFrames = 45;
+let noiseStartDelay = 60;
+let noiseFadeInFrames = 10;
 
 function getActiveColor(colorName) {
   if (typeof getToneColor === "function") {
