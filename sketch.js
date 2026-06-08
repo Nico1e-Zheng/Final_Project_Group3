@@ -68,7 +68,9 @@ function setup() {
     applyToneToSegments();
   }
 
-  setupAudioMechanic();
+  if (typeof setupAudioMechanic == "function") {
+    setupAudioMechanic();
+  }
 
   // Modified part: make the audio button follow the same tone system.
   if (typeof updateToneUI == "function") {
@@ -122,10 +124,16 @@ function draw(){
   drawSkyOverlap();
 
   //call each mechanic here
-  drawNoiseMechanic();
-  drawTimeBased();
-  //drawUserInput();
+  if (typeof drawNoiseMechanic == "function") {
+    drawNoiseMechanic();
+  }
+  if (typeof drawTimeBased == "function") {
+    drawTimeBased();
+  }
+  // user input is handled through mousePressed, mouseDragged and mouseReleased
+  if (typeof drawAudioMechanic == "function") {
   drawAudioMechanic();
+  }
 
   //draw DragPath, Dolphin and Seagull
   drawCurrentDragPath();

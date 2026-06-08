@@ -211,8 +211,7 @@ function drawOriginalBasedSkyChange(segment) {
   let cy = y + h / 2;
   let gridX = x / w;
   let gridY = y / h;
-  let sunX = width * 0.5;
-  let sunY = height * 0.34;
+
   let horizonY = height * horizonLine;
   let sunCentreX = width / 2;
   let sunCentreY = horizonY * 0.82;
