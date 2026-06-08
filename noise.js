@@ -25,8 +25,7 @@ function drawNoiseMechanic() {
     fadeAmount = constrain(fadeAmount, 0, 1);
   }
 
-  // only draw the original ocean details during the short beginning transition
-  // after the noise is fully visible, stop drawing this so it will not overlap with time ASCII
+  // keep the original ocean visible for a short start transition
   if (fadeAmount < 1) {
     drawOceanOverlap();
   }
@@ -36,22 +35,29 @@ function drawNoiseMechanic() {
     return;
   }
 
-  // noise starts slowly, then becomes normal speed
   noiseTime += noiseSpeed * fadeAmount;
-
   let horizonY = height * horizonLine;
-
   push();
   drawingContext.globalAlpha = fadeAmount;
 
   for (let segment of segmentArr) {
     let cy = segment.y + segment.height / 2;
-
-    // skip cells that are in the time-based ASCII ring
+    let inTimeSpread = false;
     if (typeof isInTimeSpread === "function") {
-      if (isInTimeSpread(segment)) {
-        continue;
+      inTimeSpread = isInTimeSpread(segment);
+    }
+
+    // keep showing the seagull trail
+    if (cy < horizonY) {
+      let seagullWake = getSeagullWakeInfluence(segment);
+      if (seagullWake > 0.08) {
+      drawSeagullSkyWake(segment, seagullWake);
+      continue;
       }
+    }
+
+    if (inTimeSpread) {
+      continue;
     }
 
     if (cy < horizonY) {
@@ -277,23 +283,25 @@ function drawOriginalBasedSkyChange(segment) {
     cy > horizonY * 0.7 &&
     cy < horizonY;
 
+  let seagullWake = getSeagullWakeInfluence(segment);
+  if (seagullWake > 0.08 && nearSunDots == false) {
+    drawSeagullSkyWake(segment, seagullWake);
+    return;
+  }
+
   if (nearSunDots) {
     // the sun body
     if (segment.colorName == "sunYellow") {
       drawBreathingSunCell(segment);
       return;
     }
-
-    // dots around the sun
     if (
       segment.colorName == "softOrange" ||
       segment.colorName == "creamYellow"
     ) {
-      // cover the old static dots
       noStroke();
       fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
-
       let dotAppear = noise(
         gridX * 0.04 - noiseTime * 0.15,
         gridY * 0.04,
@@ -302,7 +310,6 @@ function drawOriginalBasedSkyChange(segment) {
 
       if (dotAppear > 0.25) {
         let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
-
         let pulse = map(
           sin(sunDist * 0.07 - frameCount * 0.14),
           -1,
@@ -310,13 +317,10 @@ function drawOriginalBasedSkyChange(segment) {
           0.55,
           1.3
         );
-
         let dotScale = map(dotAppear, 0.25, 1, 0.35, 1.05);
         let dotSize = w * 0.38 * dotScale * pulse;
-
         noStroke();
         fill(getActiveColor("creamYellow"));
-
         circle(x + w * 0.3, y + h * 0.3, dotSize);
         circle(x + w * 0.7, y + h * 0.3, dotSize * 0.9);
         circle(x + w * 0.3, y + h * 0.7, dotSize * 0.85);
@@ -370,7 +374,6 @@ function drawOriginalBasedSkyChange(segment) {
     if (crossAppear > appearThreshold) {
       let crossAmount = map(crossAppear, 0, 1, 0.55, 1.15);
       crossAmount = crossAmount * (0.75 + sunInfluence * 0.25);
-
       drawSoftOriginalCross(segment, crossAmount);
     } else {
       noStroke();
@@ -458,7 +461,6 @@ let warmShadowColor = getActiveColor("goldenOrange");
   // make the sun slightly darker and warmer 
   let mixAmount = map(pulse, 0.94, 1.06, 0.35, 0.08);
   let breathingColor = lerpColor(sunColor, warmShadowColor, mixAmount);
-
   noStroke();
   fill(breathingColor);
 
@@ -470,5 +472,119 @@ let warmShadowColor = getActiveColor("goldenOrange");
     y + (h - newH) / 2,
     newW,
     newH
+  );
+}
+
+// check if this sky cell is near the seagull path
+function getSeagullWakeInfluence(segment) {
+  if (typeof seagullAnimations == "undefined") {
+    return 0;
+  }
+  if (seagullAnimations.length == 0) {
+    return 0;
+  }
+
+  let cx = segment.x + segment.width / 2;
+  let cy = segment.y + segment.height / 2;
+  let cellSize = segment.width;
+  let strongest = 0;
+
+  for (let bird of seagullAnimations) {
+    let currentT = (millis() - bird.startTime) / bird.duration;
+    currentT = constrain(currentT, 0, 1);
+    for (let i = 0; i < 7; i++) {
+      let oldT = currentT - i * 0.045;
+      if (oldT < 0) {
+        continue;
+      }
+
+      let easedT = -(cos(PI * oldT) - 1) / 2;
+      let oldX = lerp(bird.startX, bird.endX, easedT);
+      let oldBaseY = lerp(bird.startY, bird.endY, easedT);
+      let oldY = oldBaseY + sin(easedT * TWO_PI * 2) * width * 0.015;
+      let d = dist(cx, cy, oldX, oldY);
+      let range = cellSize * map(i, 0, 6, 5.5, 2.3);
+
+      if (d < range) {
+        let influence = map(d, 0, range, 1, 0);
+        influence = influence * map(i, 0, 6, 1, 0.22);
+        strongest = max(strongest, influence);
+      }
+    }
+  }
+
+  return constrain(strongest, 0, 1);
+}
+
+
+// sky cells change like a soft wind trail after the seagull passes
+function drawSeagullSkyWake(segment, wakeAmount) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+
+  let gridX = x / w;
+  let gridY = y / h;
+
+  noStroke();
+  fill(getActiveColor("softOrange"));
+  rect(x, y, w, h);
+
+  let drift = map(
+    noise(gridX * 0.08 - noiseTime * 0.3, gridY * 0.08),
+    0,
+    1,
+    -w * 0.25,
+    w * 0.25
+  );
+
+  if (segment.colorName == "skyBlue") {
+    let c = getActiveColor("skyBlue");
+    fill(red(c), green(c), blue(c), map(wakeAmount, 0, 1, 80, 210));
+    rect(x + drift, y, w, h);
+
+  } else if (segment.colorName == "goldenOrange") {
+    drawSoftOriginalCross(segment, 0.8 + wakeAmount * 0.55);
+
+  } else if (segment.colorName == "pinkPurple") {
+    drawSoftOriginalLines(segment, 0.8 + wakeAmount * 0.55);
+
+  } else {
+    let c = getActiveColor("creamYellow");
+    stroke(red(c), green(c), blue(c), map(wakeAmount, 0, 1, 60, 150));
+    strokeWeight(max(1, w * 0.07 * wakeAmount));
+
+    let lineY = y + h * 0.5 + sin(noiseTime * 2 + gridX) * h * 0.18;
+    line(x + w * 0.15 + drift, lineY, x + w * 0.85 + drift, lineY);
+  }
+}
+
+// draw the dolphin trail in the ocean
+function drawOceanWakeLines(segment, wakeAmount) {
+  let x = segment.x;
+  let y = segment.y;
+  let w = segment.width;
+  let h = segment.height;
+  let c = getActiveColor("creamYellow");
+
+  stroke(red(c), green(c), blue(c), map(wakeAmount, 0, 1, 70, 180));
+  strokeWeight(max(1, w * 0.12 * wakeAmount));
+  strokeCap(ROUND);
+
+  let moveY = sin(noiseTime * 3 + x * 0.03) * h * 0.25 * wakeAmount;
+
+  line(
+    x + w * 0.12,
+    y + h * 0.45 + moveY,
+    x + w * 0.88,
+    y + h * 0.45 + moveY
+  );
+
+  line(
+    x + w * 0.22,
+    y + h * 0.62 - moveY * 0.5,
+    x + w * 0.78,
+    y + h * 0.62 - moveY * 0.5
   );
 }
