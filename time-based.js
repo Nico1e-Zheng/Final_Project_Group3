@@ -10,8 +10,8 @@ let spreadProgress = 0;
 //true = ASCII expanding outward
 let spreadShowsASCII = true;
 
-//after 3 sec the artwork becomes dynamic
-let startDelay = 180;
+//wait for noise to fully appear before ASCII starts
+let startDelay = 240;
 
 //AI usage: the spreading method (isInTimeSpread) was developed with Claude.
 //it uses dist() to measure each cell's distance from the centre
@@ -48,6 +48,11 @@ function isInTimeSpread(segment) {
   }
 }
 
+//hold the full image for a short time before another mechanic starts again
+let noiseHoldFrames = 90;
+let asciiHoldFrames = 20;
+let holdCounter = 0;
+
 //the noise waves make it faster or slower
 function updateSpreadProgress() {
   //wait before starting
@@ -68,9 +73,25 @@ function updateSpreadProgress() {
     toneValue = toneValue - timeTonePalettes.length;
   }
 
-  //reset when spread fills the screen so another machanic starts
+  //reset when spread fills the screen so another mechanic starts
   if (spreadProgress > 1) {
+    spreadProgress = 1;
+
+    //hold the full image for a moment before switching
+    holdCounter++;
+    if (spreadShowsASCII == true) {
+      if (holdCounter < asciiHoldFrames) {
+        return;
+      }
+    } else {
+      if (holdCounter < noiseHoldFrames) {
+        return;
+      }
+    }
+
+    holdCounter = 0;
     spreadProgress = 0;
+
     if (spreadShowsASCII == true) {
       spreadShowsASCII = false;
     } else {
@@ -99,8 +120,8 @@ function getWaveOffset(segment) {
 //uses dist() to make each cell pulse at a different rhythm
 function getASCIITextSize(segment, baseSize) {
   let d = dist(segment.x, segment.y, width / 2, height * horizonLine);
-  let sizeWave = sin(d * 0.03 - frameCount * 0.05);
-  let sizeScale = map(sizeWave, -1, 1, 0.75, 1.35);
+  let sizeWave = sin(d * 0.03 - frameCount * 0.03);
+  let sizeScale = map(sizeWave, -1, 1, 0.75, 1.3);
 
   return segment.width * baseSize * sizeScale;
 }
@@ -230,7 +251,7 @@ function drawSkyCrossASCII() {
             noStroke();
             fill(getPaletteColor(segment.colorName));
             textAlign(CENTER, CENTER);
-            textSize(getASCIITextSize(segment, 1));
+            textSize(getASCIITextSize(segment, 1.4));
             text("+", segment.x + segment.width / 2, segment.y + segment.height / 2 + moveY);
           }
         }
@@ -392,12 +413,15 @@ function drawOceanFoamASCII() {
         if (isInTimeSpread(segment)) {
           let moveY = getWaveOffset(segment);
 
-          //character evolves with time progress: o / * %
-          //floor() rounds down to a whole number, % loops the index back to 0-3
+          //character changing between o / * % * / 
+          //each cell starts at a different position based on its grid location
+          //floor() rounds down, % loops the index
           //reference: https://p5js.org/reference/p5/floor/
-          let foamChars = ["o", "/", "*", "%"];
-          let charIndex = floor(spreadProgress * 8) % 4;
-          let foamChar = foamChars[charIndex];
+          let foamOptions = ["o", "/", "*", "%", "*", "/"];
+          //offset each cell so neighbours show different characters, developed with help from Claude
+          let gridOffset = (segment.x * 3 + segment.y * 7) % 6;
+          let foamIndex = floor(noiseTime * 2 + gridOffset) % 6;
+          let foamChar = foamOptions[foamIndex];
 
           noStroke();
           fill(getPaletteColor(segment.colorName));
@@ -422,11 +446,13 @@ function drawOceanCreamASCII() {
         if (isInTimeSpread(segment)) {
           let moveY = getWaveOffset(segment);
 
-          //bubble grows with time progress: . o 0 O
-          //floor() rounds down to a whole number, % loops the index back to 0-3
-          let bubbleChars = [".", "o", "0", "O"];
-          let charIndex = floor(spreadProgress * 8) % 4;
-          let foamChar = bubbleChars[charIndex];
+          //character changing between . o 0 O 0 o 
+          //each cell starts at a different position based on its grid location
+          //floor() rounds down, % loops the index
+          let bubbleOptions = [".", "o", "0", "O", "0", "o"];
+          let gridOffset = (segment.x * 3 + segment.y * 7) % 6;
+          let bubbleIndex = floor(noiseTime * 2 + gridOffset) % 6;
+          let foamChar = bubbleOptions[bubbleIndex];
 
           noStroke();
           fill(getPaletteColor(segment.colorName));
