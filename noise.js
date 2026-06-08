@@ -5,15 +5,21 @@ let oceanNoiseScale = 0.08;
 let reflectionMoveStrength = 0.45;
 let foamNoiseScale = 0.12;
 
+// random offset makes each noise field
+let noiseRandomOffset = 0;
+
 // short pause first, then fade the noise mechanic in
-let noiseStartDelay = 60;
+let noiseStartDelay = 35;
 let noiseFadeInFrames = 10;
 
-function getActiveColor(colorName) {
-  if (typeof getToneColor === "function") {
-    return getToneColor(colorName);
-  }
+// set up one random value for the noise mechanic
+function setupNoiseMechanic() {
+  noiseRandomOffset = random(1000);
+}
 
+function getActiveColor(colorName) {
+  // use the shared palette function from sketch.js
+  // this also connects to the user-input tone colour system
   return getPaletteColor(colorName);
 }
 
@@ -51,8 +57,8 @@ function drawNoiseMechanic() {
     if (cy < horizonY) {
       let seagullWake = getSeagullWakeInfluence(segment);
       if (seagullWake > 0.08) {
-      drawSeagullSkyWake(segment, seagullWake);
-      continue;
+        drawSeagullSkyWake(segment, seagullWake);
+        continue;
       }
     }
 
@@ -109,8 +115,8 @@ function getWaveAmount(segment) {
 
   //I used Perlin noise to create smooth, continuous wave movement.
   let softNoise = noise(
-    gridX * 0.08,
-    gridY * 0.08,
+    gridX * 0.08 + noiseRandomOffset,
+    gridY * 0.08 + noiseRandomOffset,
     noiseTime * 0.45
   );
 
@@ -186,8 +192,8 @@ function drawMorphingFoam(segment) {
   let scaleAmount = map(waveAmount, 0, 1, 0.55, 1.35);
 
   let morph = noise(
-    gridX * foamNoiseScale + 40,
-    gridY * foamNoiseScale + 40,
+    gridX * foamNoiseScale + 40 + noiseRandomOffset,
+    gridY * foamNoiseScale + 40 + noiseRandomOffset,
     noiseTime * 0.9
   );
 
@@ -262,26 +268,20 @@ function drawOriginalBasedSkyChange(segment) {
   let sunX = width * 0.5;
   let sunY = height * 0.34;
 
-  let d = dist(cx, cy, sunX, sunY);
-  let radial = map(d, 0, width * 0.75, 1, 0);
-  radial = constrain(radial, 0, 1);
-
-  let softNoise = noise(
-    gridX * 0.035 + noiseTime * 0.08,
-    gridY * 0.035,
-    noiseTime * 0.05
-  );
-
-  let spread = radial * 0.75 + softNoise * 0.25;
-
   let horizonY = height * horizonLine;
   let sunCentreX = width / 2;
   let sunCentreY = horizonY * 0.82;
   let sunRange = width * 0.15;
-  let nearSunDots =
-    abs(cx - sunCentreX) < sunRange &&
-    cy > horizonY * 0.7 &&
-    cy < horizonY;
+  // Check whether the time mechanic is loaded before using its spread area.
+
+  let nearSunDots = false;
+  if (abs(cx - sunCentreX) < sunRange) {
+    if (cy > horizonY * 0.7) {
+      if (cy < horizonY) {
+        nearSunDots = true;
+      }
+    }
+  }
 
   let seagullWake = getSeagullWakeInfluence(segment);
   if (seagullWake > 0.08 && nearSunDots == false) {
@@ -295,10 +295,15 @@ function drawOriginalBasedSkyChange(segment) {
       drawBreathingSunCell(segment);
       return;
     }
-    if (
-      segment.colorName == "softOrange" ||
-      segment.colorName == "creamYellow"
-    ) {
+    let isSunGlowColor = false;
+    if (segment.colorName == "softOrange") {
+      isSunGlowColor = true;
+    }
+    if (segment.colorName == "creamYellow") {
+      isSunGlowColor = true;
+    }
+
+    if (isSunGlowColor) {
       noStroke();
       fill(getActiveColor("softOrange"));
       rect(x, y, w, h);
@@ -344,7 +349,6 @@ function drawOriginalBasedSkyChange(segment) {
       gridY * 0.035,
       noiseTime * 0.08
     );
-
     if (cloudAppear > 0.42 || nearbyCloud > 0.46) {
       noStroke();
       fill(segment.color);
@@ -363,14 +367,12 @@ function drawOriginalBasedSkyChange(segment) {
       gridY * 0.04,
       noiseTime * 0.1
     );
-
     let sunDist = dist(cx, cy, sunCentreX, sunCentreY);
     let innerRadius = width * 0.08;
     let outerRadius = width * 0.18;
     let sunInfluence = map(sunDist, innerRadius, outerRadius, 1, 0);
     sunInfluence = constrain(sunInfluence, 0, 1);
     let appearThreshold = map(sunInfluence, 0, 1, 0.42, 0.05);
-
     if (crossAppear > appearThreshold) {
       let crossAmount = map(crossAppear, 0, 1, 0.55, 1.15);
       crossAmount = crossAmount * (0.75 + sunInfluence * 0.25);
@@ -388,7 +390,6 @@ function drawOriginalBasedSkyChange(segment) {
       gridY * 0.04 + 20,
       noiseTime * 0.1
     );
-
     if (lineAppear > 0.45) {
       drawSoftOriginalLines(segment, lineAppear);
     } else {
@@ -429,7 +430,6 @@ function drawSoftOriginalLines(segment, amount) {
   let y = segment.y;
   let w = segment.width;
   let h = segment.height;
-
   let moveX = sin(noiseTime * 1.1 + y * 0.01) * w * 0.08;
 
   stroke(getActiveColor("pinkPurple"));
@@ -446,7 +446,6 @@ function drawBreathingSunCell(segment) {
   let y = segment.y;
   let w = segment.width;
   let h = segment.height;
-
   let pulse = map(
     sin(frameCount * 0.055 + x * 0.02 + y * 0.02),
     -1,
@@ -456,10 +455,11 @@ function drawBreathingSunCell(segment) {
   );
 
   let sunColor = getActiveColor("sunYellow");
-let warmShadowColor = getActiveColor("goldenOrange");
+  let warmShadowColor = getActiveColor("goldenOrange");
 
   // make the sun slightly darker and warmer 
   let mixAmount = map(pulse, 0.94, 1.06, 0.35, 0.08);
+  // It makes the sun softly shift between yellow and orange.
   let breathingColor = lerpColor(sunColor, warmShadowColor, mixAmount);
   noStroke();
   fill(breathingColor);
@@ -491,6 +491,7 @@ function getSeagullWakeInfluence(segment) {
 
   for (let bird of seagullAnimations) {
     let currentT = (millis() - bird.startTime) / bird.duration;
+    // keep the animation progress between 0 and 1
     currentT = constrain(currentT, 0, 1);
     for (let i = 0; i < 7; i++) {
       let oldT = currentT - i * 0.045;
@@ -512,10 +513,9 @@ function getSeagullWakeInfluence(segment) {
       }
     }
   }
-
+  // keep the final wake strength between 0 and 1
   return constrain(strongest, 0, 1);
 }
-
 
 // sky cells change like a soft wind trail after the seagull passes
 function drawSeagullSkyWake(segment, wakeAmount) {
@@ -558,33 +558,4 @@ function drawSeagullSkyWake(segment, wakeAmount) {
     let lineY = y + h * 0.5 + sin(noiseTime * 2 + gridX) * h * 0.18;
     line(x + w * 0.15 + drift, lineY, x + w * 0.85 + drift, lineY);
   }
-}
-
-// draw the dolphin trail in the ocean
-function drawOceanWakeLines(segment, wakeAmount) {
-  let x = segment.x;
-  let y = segment.y;
-  let w = segment.width;
-  let h = segment.height;
-  let c = getActiveColor("creamYellow");
-
-  stroke(red(c), green(c), blue(c), map(wakeAmount, 0, 1, 70, 180));
-  strokeWeight(max(1, w * 0.12 * wakeAmount));
-  strokeCap(ROUND);
-
-  let moveY = sin(noiseTime * 3 + x * 0.03) * h * 0.25 * wakeAmount;
-
-  line(
-    x + w * 0.12,
-    y + h * 0.45 + moveY,
-    x + w * 0.88,
-    y + h * 0.45 + moveY
-  );
-
-  line(
-    x + w * 0.22,
-    y + h * 0.62 - moveY * 0.5,
-    x + w * 0.78,
-    y + h * 0.62 - moveY * 0.5
-  );
 }

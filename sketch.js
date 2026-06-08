@@ -57,6 +57,9 @@ function setup() {
 
   let size = Math.min(windowWidth, windowHeight);
   createCanvas(size, size);
+  if (typeof setupNoiseMechanic == "function") {
+    setupNoiseMechanic();
+  }
   buildGrid();
 
   // Modified part: after the grid is built, sync every segment color with the current tone.
