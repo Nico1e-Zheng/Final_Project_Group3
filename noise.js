@@ -147,7 +147,11 @@ function drawMorphingFoam(segment) {
   let gridX = x / w;
   let gridY = y / h;
   let moveY = map(waveAmount, 0, 1, h * 0.18, -h * 0.3);
-  let scaleAmount = map(waveAmount, 0, 1, 0.55, 1.35);
+  let audioBoost = 0;
+  if (typeof getAudioWaveBoost == "function") {
+    audioBoost = getAudioWaveBoost();
+  }
+  let scaleAmount = map(waveAmount, 0, 1, 0.55, 1.35 + audioBoost * 0.25);
   let morph = noise(
     gridX * foamNoiseScale + 40 + noiseRandomOffset,
     gridY * foamNoiseScale + 40 + noiseRandomOffset,

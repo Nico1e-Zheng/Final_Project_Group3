@@ -137,7 +137,12 @@ function controlNoiseWithAudio() {
   }
 }
 
-function getAudioWaveBoost() { return 0; }
+function getAudioWaveBoost() {
+  if (!audioStarted) {
+    return 0;
+  }
+  return audioEnergy * 0.35;
+}
 function getAudioBeatPulse() { return 0; }
 function getAudioTrebleFlash() { return 0; }
 function getAudioRowShear(rowIndex, cellWidth) { return 0; }
