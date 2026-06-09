@@ -298,7 +298,7 @@ function drawDolphinAnimations() {
 for (let i = dolphinAnimations.length - 1; i >= 0; i--) {
 let dolphin = dolphinAnimations[i];
 
-```
+
 let t = (millis() - dolphin.startTime) / dolphin.duration;
 
 if (t >= 1) {
@@ -320,7 +320,7 @@ let angle = dolphin.direction * arcAngle;
 
 drawDolphinSplash(dolphin, easedT);
 drawLineDolphin(x, y, dolphin.direction, angle);
-```
+
 
 }
 }
@@ -330,7 +330,7 @@ function drawSeagullAnimations() {
 for (let i = seagullAnimations.length - 1; i >= 0; i--) {
 let bird = seagullAnimations[i];
 
-```
+
 let t = (millis() - bird.startTime) / bird.duration;
 
 if (t >= 1) {
@@ -350,7 +350,7 @@ let y = baseY + sin(easedT * TWO_PI * 2) * width * 0.015;
 let wingPhase = sin(easedT * TWO_PI * 6);
 
 drawLineSeagull(x, y, bird.direction, wingPhase);
-```
+
 
 }
 }
@@ -517,9 +517,9 @@ for (let i = 0; i < 8; i++) {
 let px = map(i, 0, 7, -0.8, -2.25) * s;
 let py = map(i, 0, 7, -0.1 + flap, -1.75 + flap) * s;
 
-```
+
 line(px, py, px + 0.42 * s, py + 0.38 * s);
-```
+
 
 }
 
@@ -549,9 +549,9 @@ for (let i = 0; i < 10; i++) {
 let px = map(i, 0, 9, 1.05, 3.02) * s;
 let py = map(i, 0, 9, -0.05 + flap, -2.0 + flap) * s;
 
-```
+
 line(px, py, px - 0.45 * s, py + 0.42 * s);
-```
+
 
 }
 
@@ -621,24 +621,24 @@ strokeCap(ROUND);
 if (progress < 0.25) {
 let amount = map(progress, 0, 0.25, 1, 0);
 
-```
+
 let x = lerp(dolphin.startX, dolphin.endX, progress);
 let y = dolphin.baseY;
 
 drawSplashLines(x, y, s, amount);
-```
+
 
 }
 
 if (progress > 0.75) {
 let amount = map(progress, 0.75, 1, 0, 1);
 
-```
+
 let x = lerp(dolphin.startX, dolphin.endX, progress);
 let y = dolphin.baseY;
 
 drawSplashLines(x, y, s, amount);
-```
+
 
 }
 }
@@ -807,13 +807,13 @@ let horizonY = height * horizonLine;
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy < horizonY) {
   noStroke();
   fill(getToneColor("skyBlue"));
   rect(segment.x, segment.y, segment.width, segment.height);
 }
-```
+
 
 }
 }
@@ -825,13 +825,13 @@ let horizonY = height * horizonLine;
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy >= horizonY) {
   noStroke();
   fill(getToneColor("oceanBlue"));
   rect(segment.x, segment.y, segment.width, segment.height);
 }
-```
+
 
 }
 }
@@ -846,13 +846,13 @@ fill(getToneColor("softOrange"));
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy < horizonY) {
   if (segment.colorName != "skyBlue") {
     rect(segment.x, segment.y, segment.width, segment.height);
   }
 }
-```
+
 
 }
 }
@@ -867,13 +867,13 @@ fill(getToneColor("softOrange"));
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy >= horizonY) {
   if (segment.colorName == "goldenOrange") {
     rect(segment.x, segment.y, segment.width, segment.height);
   }
 }
-```
+
 
 }
 }
@@ -888,7 +888,7 @@ for (let segment of segmentArr) {
 let cx = segment.x + segment.width / 2;
 let cy = segment.y + segment.height / 2;
 
-```
+
 let nearSun = false;
 
 if (abs(cx - sunCentreX) < sunRange) {
@@ -908,7 +908,7 @@ if (nearSun == true) {
     drawFourDotsWithColor(segment, getToneColor("creamYellow"));
   }
 }
-```
+
 
 }
 }
@@ -920,7 +920,7 @@ let horizonY = height * horizonLine;
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy < horizonY) {
   if (segment.colorName == "goldenOrange") {
     drawCrossWithColor(segment, getToneColor("goldenOrange"));
@@ -932,7 +932,7 @@ if (cy < horizonY) {
     rect(segment.x, segment.y, segment.width, segment.height);
   }
 }
-```
+
 
 }
 }
@@ -944,7 +944,7 @@ let horizonY = height * horizonLine;
 for (let segment of segmentArr) {
 let cy = segment.y + segment.height / 2;
 
-```
+
 if (cy >= horizonY) {
   if (segment.colorName == "darkBlue") {
     drawCrossWithColor(segment, getToneColor("darkBlue"));
@@ -966,7 +966,7 @@ if (cy >= horizonY) {
     drawSmallDotWithColor(segment, getToneColor("creamYellow"));
   }
 }
-```
+
 
 }
 }
@@ -1053,4 +1053,12 @@ strokeWeight(1);
 
 line(x + w * 0.18, y + h * 0.38, x + w * 0.82, y + h * 0.38);
 line(x + w * 0.18, y + h * 0.62, x + w * 0.82, y + h * 0.62);
+}
+
+
+// Draw user input mechanic
+function drawUserinputMechanic() {
+drawCurrentDragPath();
+drawDolphinAnimations();
+drawSeagullAnimations();
 }

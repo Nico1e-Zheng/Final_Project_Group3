@@ -133,11 +133,10 @@ function draw(){
   if (typeof drawAudioMechanic == "function") {
   drawAudioMechanic();
   }
+  if (typeof drawUserinputMechanic == "function") {
+  drawUserinputMechanic();
+  }
 
-  //draw DragPath, Dolphin and Seagull
-  drawCurrentDragPath();
-  drawDolphinAnimations();
-  drawSeagullAnimations();
 }
 
 function buildGrid() {
