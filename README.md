@@ -24,7 +24,7 @@ Together, these references shaped our direction. Ding Yi gave us the foundation 
 
 <img src="readmeImages/inspiration-references.jpg">
 
-**Figure 2. Visual references used for the project, including Ding Yi's cross-based composition, Seohyo's grid/tessellation work, and Anna Lucia's line-based generative artwork.**
+*Figure 2. Visual references used for the project, including Ding Yi's cross-based composition, Seohyo's grid/tessellation work, and Anna Lucia's line-based generative artwork.*
 
 ## Project Concept
 
@@ -48,3 +48,145 @@ Main techniques:
 - `push()` and `pop()` — isolates drawing states between different shapes
 - `windowResized()` — makes the artwork adapt when the browser window is resized
 - Separate script files — each mechanic lives in its own file (noise.js, time-based.js, User-input.js, audio.js)
+
+## Mechanic Ownership
+
+### Nicole — Time-Based Mechanic
+
+**File:** time-based.js
+
+This mechanic uses time control and frame-based events to spread ASCII characters across the segment grid in a rhythmic pattern. Its main role is to temporarily transform the image from geometric symbols into a text-based visual layer.
+
+This connects directly to Ding Yi's repeated symbol language. Where Ding Yi builds density through repeated crosses and X-shapes, the time mechanic uses repeated ASCII characters as a new kind of visual mark. Characters do not appear randomly — they spread outward from the sun centre based on time and distance, creating a transition between landscape, geometric symbols, and characters.
+
+The time mechanic also adds rhythm. The artwork does not stay in one state — it cycles between the noise-driven image and the ASCII layer, with the spread expanding outward and then reversing. This makes the piece feel like it has phases, and reinforces the digital textile concept because the characters are woven into the grid like new threads.
+
+<img src="readmeImages/time-ASCII.jpg">
+
+*Figure 3. The artwork in different states: sunset tone with noise movement (left), night tone (centre), and ASCII characters spreading across the grid (right).*
+
+#### Development Process
+
+The ASCII conversion system maps different grid regions to different characters — sky crosses become `+`, purple lines become `=`, ocean blue becomes `~`, and foam cycles through characters such as `o`, `*`, `%`, and `/`. This keeps the visual differences between sky, sun, and ocean rather than turning everything into random text.
+
+The spread rhythm went through several rounds of adjustment. ASCII characters appear after a short delay (`startDelay`) and expand gradually from the sun centre using `dist()`, rather than covering everything at once. After filling the screen, the spread holds briefly before reversing, so the viewer has time to see each state clearly.
+
+The spread speed is influenced by the noise wave (`sin(noiseTime)`), and the spread progress also drives `toneValue` forward, so the colour tone automatically shifts during ASCII expansion. Characters appear based on segment grid positions rather than as an independent overlay.
+
+
+### Cayla — Audio Mechanic
+
+**File:** audio.js
+
+This mechanic uses music volume and frequency energy to influence the artwork, adding a sound-driven rhythm layer. When the viewer clicks the "Activate Music Waves" button, music starts playing and the audio mechanic analyses the sound energy, passing those values to the visual system.
+
+Its main role is to connect the ocean visuals with sound. The system reads audio energy, bass, mid, and treble data using a Web Audio API analyser, and converts these into control values that other mechanics can use. When the music has more energy, the ocean waves move more intensely.
+
+<img src="readmeImages/audio-compression.jpg">
+
+*Figure 4. Audio mechanic comparison: before activation (left) and after activation (right). When music is playing, the ocean waves move more actively in response to sound energy.*
+
+
+#### Development Process
+
+The playback system needed a user-triggered button because browsers block autoplay. This gives the viewer a clear entry point into the sound interaction.
+
+The analyser reads frequency data and splits it into bass, mid, and treble ranges. The focus was not on just playing background music, but on turning sound into data that can drive visual changes.
+
+Audio energy values are connected to the noise mechanic, so wave movement responds to music intensity. When music energy is high, `noiseSpeed` increases and the ocean moves more actively. When music is not playing, the waves return to their base movement.
+
+## How the Four Mechanics Connect
+
+The four mechanics are not four separate effects layered on top of each other. They all operate on the same `segmentArr` grid. Every cell stores its position, size, colour name, and current colour, so time, noise, user input, and audio are all changing the same visual structure.
+
+**User input sets the shared colour system.** Viewers cycle through morning, noon, sunset, and night tones using arrow keys. This change is not local to user input — it syncs across the whole artwork through `getPaletteColor()` and `applyToneToSegments()`. Waves in the noise mechanic, ASCII characters in the time mechanic, and audio-boosted ocean movement all use the same current colours.
+
+**Time and noise take turns.** The time mechanic spreads ASCII characters outward from the sun centre, transforming the symbol grid into a character layer. The noise mechanic checks `isInTimeSpread(segment)` and skips cells that are currently showing ASCII, so the two do not overlap. When the spread reverses, noise takes over those cells again. The spread progress also drives `toneValue`, so the colour tone shifts automatically during each expansion cycle.
+
+**Noise responds to time characters.** Ocean ASCII characters are not static — they read wave data from the noise mechanic through `getWaveOffset()`, so characters like `~`, `#`, `%` bob up and down with the waves. This keeps the ASCII layer visually consistent with the ocean movement.
+
+**User input feeds into noise.** When viewers drag in the sky, the seagull animation is created by user input, but the noise mechanic reads the seagull's path through `getSeagullWakeInfluence()` and softly shifts nearby sky cells, creating a natural trail effect. Dolphin animations appear in the ocean area, connecting with the wave region.
+
+**Audio drives noise intensity.** When music is playing, the audio mechanic analyses sound energy and adjusts `noiseSpeed` in the noise mechanic. Louder music makes the waves move with more energy. The audio wave boost also affects foam morphing scale through `getAudioWaveBoost()`. When music is off, the waves return to their base speed.
+
+The result: user input controls the global colour and triggers path events, time changes the grid's symbol state, noise handles natural movement and environmental response, and audio strengthens the wave rhythm. All changes come from the same segment grid, keeping the artwork unified.
+
+<img src="readmeImages/mechanics-interaction.png" width="500">
+
+*Figure 5. Mechanic connection diagram — each mechanic produces data that flows into the shared segment grid, keeping all four systems linked rather than layered separately.*
+
+## Interaction Instructions
+
+1. Open the project page.
+2. Watch the brief still sunset image.
+3. Wait for the piece to enter the Perlin noise dynamic state.
+4. Click the "Activate Music Waves" button to start the music.
+5. Hold the **left** or **right arrow key** to change the overall colour tone. The tone cycles smoothly between morning, noon, sunset, and night.
+6. Drag in the **sky area** to trigger a seagull flight path.
+7. Drag in the **ocean area** to trigger a dolphin jumping path.
+8. Watch how time-based ASCII, noise movement, audio energy, and user input all affect the same grid system together.
+
+The artwork is best viewed through one full cycle, as it transitions from still image to dynamic ocean, ASCII character layer, and sound-responsive visuals.
+
+## File Structure
+
+- `index.html` — loads p5.js, project scripts, and assets
+- `sketch.js` — main file; handles image loading, responsive canvas, segment grid generation, and calls all mechanics
+- `noise.js` — Perlin noise and randomness mechanic
+- `time-based.js` — time-based ASCII mechanic
+- `User-input.js` — user input mechanic; keyboard tone control, mouse drag paths, seagull and dolphin animations
+- `audio.js` — audio mechanic; music playback, sound analysis, and audio energy control
+- `assets/sunset.png` — the sunset base image used by the project
+- `assets/Echoes of Nature - Low Tide.mp3` — the audio track used by the audio mechanic
+
+## AI Acknowledgement
+
+We used AI as an assistive tool during development, mainly to help explain logic, check JavaScript errors, organise function structure, and improve the clarity of our README and code comments.
+
+AI did not replace our creative decisions. The theme, the reinterpretation of Ding Yi's work, the grid sunset visual direction, the four-mechanic division, animation rhythm, and final visual outcomes were all decided through group discussion, testing, and iteration.
+
+AI was used for:
+- Helping understand and organise p5.js code logic
+- Checking JavaScript errors and resolving conflicts between mechanics
+- Improving the structure of Perlin noise, ASCII spread, tone colour system, and audio response code
+- Helping write clearer README text and code comments
+- Explaining how certain AI-assisted code sections work
+
+We also added AI acknowledgement comments in the relevant code sections, noting which parts used AI for explanation or debugging. All AI-assisted code was tested, modified, and integrated by the team before being included in the final version.
+
+## External References
+
+> Sources: [Appearance of Crosses (Ding Yi)](https://www.artsy.net/artwork/ding-yi-ding-yi-appearance-of-crosses-2) | [Tidal Tessellation (Seohyo)](https://www.lerandom.art/collection/tidal-tessellation-230328) | [Loom #0 (Anna Lucia)](https://www.artblocks.io/token/1/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/213000000) | [p5.js Reference](https://p5js.org/reference/)
+
+> Audio source: "Low Tide" from [Echoes of Nature: Ocean Waves (NetEase Cloud Music)](https://music.163.com/#/song?id=4054466). Used for educational coursework purposes only. The track's audio energy is analysed to influence ocean wave movement.
+
+> Image source: sunset.png was created by our team as the base image for this project.
+
+## Course Techniques
+
+This project mainly uses techniques learned in class:
+- Image loading and colour sampling
+- Grid-based drawing
+- Arrays and loops
+- Functions and custom objects
+- Responsive canvas resizing
+- Perlin noise
+- Random values
+- Easing with `lerp()`
+- Transformations: `translate()`, `rotate()`, `scale()`
+- Keyboard and mouse interaction
+- Frame-based animation
+- Audio-driven visual response
+- Modular code structure with separate script files
+
+## Team Contribution Summary
+
+Each member was responsible for one mechanic, with development contributions visible through GitHub commits.
+
+- **Xueqin** — User input mechanic: colour switching, keyboard input, mouse paths, seagull and dolphin animations
+- **Nicole** — Time-based mechanic: ASCII character conversion, spread rhythm, and time state control
+- **Ying Li** — Perlin noise and randomness mechanic: ocean waves, sky, sun, foam, seagull trail, and noise transitions
+- **Cayla** — Audio mechanic: music playback, sound analysis, and audio-driven wave feedback
+
+The final project is integrated through the shared segment grid system in sketch.js.
+
