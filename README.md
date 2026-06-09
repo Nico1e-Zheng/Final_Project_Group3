@@ -63,7 +63,7 @@ This mechanic uses keyboard and mouse input to let viewers directly affect the a
 
 <img src="readmeImages/userinput-compression.jpg">
 
-*Figure 3.User input mechanic showing the four tone palettes (noon, night, sunset, morning from left to right) controlled by arrow keys, with close-ups of the seagull and dolphin animations triggered by mouse dragging.*
+*Figure 3. User input mechanic showing the four tone palettes (noon, night, sunset, morning from left to right) controlled by arrow keys, with close-ups of the seagull and dolphin animations triggered by mouse dragging.*
 
 #### Development Process
 
@@ -120,6 +120,8 @@ The mechanic was then extended to the sky and sun. Blue cloud cells were given s
 Later, the noise mechanic was connected with the seagull path from the user input mechanic. When a seagull is triggered, nearby sky cells shift slightly, creating a natural movement trace instead of adding a separate layer. This helps the interaction feel part of the same grid environment.
 
 Finally, the mechanic was integrated with the group system. It fades in after a short still image so the original artwork can be seen first, uses `getPaletteColor()` to follow user input tone changes, checks `isInTimeSpread()` to avoid visual overlap with the time-based ASCII mechanic, and connects with the audio mechanic through `getAudioWaveBoost()` so wave movement becomes stronger when music energy increases. Through these changes, the noise mechanic became a system that connects natural motion, colour changes, user interaction, time-based transformation and sound response within the same segment grid.
+
+The mechanic fades in after a short still image so the original artwork can be seen first, then coordinates with the time and audio mechanics by managing drawing regions and adjusting movement intensity.
 
 ### Cayla — Audio Mechanic
 
