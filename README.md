@@ -99,9 +99,11 @@ The spread speed is influenced by the noise wave (`sin(noiseTime)`), and the spr
 
 **File:** noise.js
 
-Ying Li was responsible for the Perlin noise and randomness mechanic, mainly developed in noise.js. This mechanic makes the originally still sunset grid feel more alive, while keeping the repeated, grid-based and symbolic visual language inspired by Ding Yi’s work. It mainly affects the ocean, sky and sun areas, turning the static sunset into a dynamic digital seascape.
+Ying Li was responsible for the Perlin noise and randomness mechanic, mainly developed in `noise.js`. This mechanic makes the originally still sunset grid feel more alive, while keeping the repeated, grid-based and symbolic visual language inspired by Ding Yi’s work. It mainly affects the ocean, sky and sun areas, turning the static sunset into a dynamic digital seascape.
 
-In the ocean area, Perlin noise controls wave movement, reflection lines, foam cells and cross-shaped wave shadows. Instead of random jumping, noise() creates smooth and continuous motion, so the ocean moves like rolling waves while still preserving the grid structure. In the sky and sun areas, blue cloud cells and orange sky areas shift subtly with Perlin noise, while the sun glow dots flicker softly. This makes the whole scene feel dynamic, not just the ocean.
+In the ocean area, Perlin noise controls wave movement, reflection lines, foam cells and cross-shaped wave shadows. Different visual elements respond to noise in different ways: dark blue and golden orange cross cells move like wave shadows, sky blue, pink-purple and yellow line cells become shifting reflection lines, and foam-grey or cream-yellow cells morph between circles, squares, crosses and small dot clusters. Instead of random jumping, `noise()` creates smooth and continuous motion, so the ocean moves like rolling waves while still preserving the grid structure.
+
+In the sky and sun areas, blue cloud cells softly appear and disappear with Perlin noise, while orange crosses and purple line cells shift slightly to create slow atmospheric movement. Around the sun, cream-yellow glow dots flicker and pulse, and the main sun area uses a subtle breathing effect. This makes the whole scene feel dynamic, not just the ocean.
 
 The seagull path interaction is also an important part of this mechanic. When the user input mechanic triggers a seagull flying across the sky, the noise mechanic responds by changing the nearby sky cells along its path. These cells shift softly and briefly, creating a wake-like movement trace behind the bird. Instead of placing the seagull effect as a separate animation layer, this design makes the surrounding grid react to the bird’s movement, so the seagull feels connected to the sky environment.
 
@@ -110,13 +112,14 @@ The seagull path interaction is also an important part of this mechanic. When th
 *Figure 5. Noise mechanic in action across different tones (left to right), with close-ups of the soft sky wake left behind a seagull path (top right) and a dolphin in the wave region (bottom right).*
 
 #### Development Process
-The Perlin noise and randomness mechanic went through several rounds of testing and adjustment. At first, the focus was on the ocean. noise() was used to animate reflection lines, wave shadows and foam cells, making the still sea move with a gentle wave rhythm. The speed, movement range and shape changes were adjusted multiple times so the motion would feel natural without breaking the original image.
 
-The mechanic was then extended to the sky and sun. Blue cloud cells were given soft movement, orange areas gained subtle flow, and the sun glow dots were adjusted to create a gentle flickering effect without covering the main sun shape.
+The Perlin noise and randomness mechanic went through several rounds of testing and adjustment. At first, the focus was on the ocean. `noise()` was used to animate reflection lines, wave shadows and foam cells, making the still sea move with a gentle wave rhythm. The wave movement combines `sin()` and `noise()`: `sin()` creates a repeated wave rhythm, while Perlin noise adds smoother and less predictable variation. I also used `random(1000)` to create a random noise offset when the mechanic starts, so the noise field is not exactly the same every time the sketch runs.
 
-Later, the noise mechanic was connected with the seagull path from the user input mechanic. When a seagull is triggered, nearby sky cells shift slightly, creating a natural movement trace instead of adding a separate layer.
+The mechanic was then extended to the sky and sun. Blue cloud cells were given soft movement, orange cross cells gained subtle flow, and purple line cells shifted slightly across the sky. The sun glow dots were adjusted to create a gentle flickering effect without covering the main sun shape, while the sun body was given a subtle breathing movement.
 
-Finally, the mechanic was integrated with the group system. It uses the shared colour palette to follow user input tone changes, coordinates with the time mechanic to avoid visual overlap, and connects with the audio mechanic by strengthening wave movement when music energy increases. Through these changes, the noise mechanic became a system that connects natural motion, colour changes, user interaction, time-based transformation and sound response within the same segment grid.
+Later, the noise mechanic was connected with the seagull path from the user input mechanic. When a seagull is triggered, nearby sky cells shift slightly, creating a natural movement trace instead of adding a separate layer. This helps the interaction feel part of the same grid environment.
+
+Finally, the mechanic was integrated with the group system. It fades in after a short still image so the original artwork can be seen first, uses `getPaletteColor()` to follow user input tone changes, checks `isInTimeSpread()` to avoid visual overlap with the time-based ASCII mechanic, and connects with the audio mechanic through `getAudioWaveBoost()` so wave movement becomes stronger when music energy increases. Through these changes, the noise mechanic became a system that connects natural motion, colour changes, user interaction, time-based transformation and sound response within the same segment grid.
 
 ### Cayla — Audio Mechanic
 
