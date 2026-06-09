@@ -59,6 +59,7 @@ This mechanic uses keyboard and mouse input to let viewers directly affect the a
 
 **Colour control:** The mechanic uses different tone palettes to change the overall colour mood. Viewers can hold the left or right arrow keys to smoothly cycle between morning, noon, sunset, and night tones. This colour system is shared across all mechanics through `getPaletteColor()` and `applyToneToSegments()`, so the base image, noise effects, and ASCII characters all follow the same current tone.
 
+**Mouse interaction:** When the viewer drags in the sky area, a seagull animation is triggered. When dragging in the ocean area, a dolphin animation appears. The area is detected using `mouseY` relative to the horizon line. This connects the viewer's gestures to natural elements within the scene.
 
 <img src="readmeImages/userinput-compression.jpg">
 
