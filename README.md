@@ -1,84 +1,50 @@
-# Quiz 9: Final Assessment Project Pitch: Rewoven Crosses
+# Digital Tide
 
-## Part 1: Project Direction
+## Project Overview
 
-Our team has chosen to reinterpret *Appearance of Crosses* by **Ding Yi**, a Chinese contemporary artist known for his grid-based paintings made from repeated cross and X motifs with layered colours. His works are built on a simple grid structure, but the overlapping colours make them feel dense and chaotic up close.
+Digital Tide is an interactive visual piece built with p5.js. We took a sunset image and broke it down into a segment grid — a grid of small cells, where each cell stores its position, size, colour, and colour name. Instead of showing the image as a normal picture, the artwork redraws it using repeated symbols: crosses, dots, lines, squares, colour blocks, and ASCII characters.
 
-<img src="readmeImages/dingyi.png" width="350">
+From a distance, the sunset silhouette is still recognisable. Up close, the image becomes a dense pattern of geometric marks and characters — somewhere between a landscape painting, a digital mosaic, and a woven textile.
 
-*Appearance of Crosses (Ding Yi) — the existing artwork our project is based on.*
+This project reinterprets the repeated cross, grid, and symbol-based visual language of Ding Yi's *Appearance of Crosses*, rather than directly copying one specific image. We applied this visual language to a team-created sunset scene and extended it with interactive p5.js mechanics. As the piece runs, Perlin noise, time-based events, user input, and audio response all affect the same grid, turning the still sunset into something that moves, responds, and changes over time.
 
-We were inspired by **Seohyo**'s *Tidal Tessellation* for how it uses varied geometric symbols as building blocks in a grid to reconstruct an image. We want to bring this idea into our piece by incorporating shapes like circles, lines, and squares alongside Ding Yi's crosses. 
+<img src="readmeImages/sunset-grid-comparison.jpg">
 
-<img src="readmeImages/tidal-tessellation.png" width="250">
+*Figure 1. The original sunset image translated into a segment grid of repeated colours, crosses, dots, lines, and geometric marks.*
 
-*Tidal Tessellation (Seohyo) — inspiration for using varied geometric symbols in a grid.*
+## Inspiration
 
-We were also inspired by **Anna Lucia**'s *Loom #0* (2021), where repeated lines are organised like threads on a loom, electronic circuits, or data paths. This gave us the idea to develop Ding Yi's cross grid into a **digital textile** that changes based on **user input, time, randomness, and sound**.
+Our main artistic reference is **Ding Yi**'s *Appearance of Crosses*. His work uses repeated crosses, X-shapes, grid structures, and layered colours to build dense visual surfaces from a single simple mark. We borrowed this idea of "repetition, grid, and symbol" and turned it into our segment grid, where every cell can become a cross, dot, line, square, colour block, or character.
 
-<img src="readmeImages/loom-anna-lucia.png" width="350">
+We also looked at **Seohyo**'s *Tidal Tessellation*, which showed us how geometric symbols can be used as basic units to reconstruct an image. This is why we did not display the sunset photo directly — we split it into grid cells and redrew it with different visual marks, keeping the overall shape while making it more abstract.
 
-*Loom #0 (Anna Lucia, 2021) — inspiration for the digital textile concept.*
+**Anna Lucia**'s *Loom #0* (2021) influenced our concept too. Its repeated lines reminded us of looms, threads, circuits, and data streams. This led us to think of Digital Tide as a kind of digital textile — an image woven from many small units, which can then be changed by time, sound, user input, and noise.
 
-We plan to take Ding Yi's core visual elements, such as crosses, repetition, density, and layered colour, and turn them into something that can move and change. 
+Together, these references shaped our direction. Ding Yi gave us the foundation of crosses, repetition, grid, and layered colour. Seohyo showed us how to reconstruct an image with geometric symbols. Anna Lucia inspired us to treat the grid as a system that can carry movement, rhythm, and interaction.
 
-> Sources: [Appearance of Crosses (Ding Yi)](https://www.artsy.net/artwork/ding-yi-ding-yi-appearance-of-crosses-2) | [Tidal Tessellation (Seohyo)](https://www.lerandom.art/collection/tidal-tessellation-230328) | [Loom #0 (Anna Lucia)](https://www.artblocks.io/token/1/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/213000000)
+<img src="readmeImages/inspiration-references.jpg">
 
-## Part 2: Team Members and Mechanic Ownership
-### Mechanic 1: User Input: Xueqin Zhao
-The user input mechanic allows the viewer to control the overall **colour mood** of the grid through **mouse movement**. When the viewer moves the mouse from left to right across the canvas, the main colour palette of the grid gradually shifts between colours inspired by Ding Yi’s artwork, such as **yellow, pink, blue, red and warm white**. The colour transition will be smooth rather than sudden, so the image feels like a moving digital textile rather than a simple colour switch.
-The viewer can also **click the mouse** to **lock the current colour palette**. When the colour is locked, mouse movement will no longer change the colours. Clicking again will **unlock the palette** and return control to the viewer. This keeps the interaction simple and easy to understand.
-This mechanic connects to our project vision because Ding Yi’s work is built from repeated cross marks, dense grids and layered colour systems. My mechanic does not change the structure of the grid. Instead, it allows the viewer to influence the atmosphere of the artwork while keeping the repeated cross-based system recognisable.
+**Figure 2. Visual references used for the project, including Ding Yi's cross-based composition, Seohyo's grid/tessellation work, and Anna Lucia's line-based generative artwork.**
 
-<img src="readmeImages/user-input.png">
+## Project Concept
 
-*User input mechanic — mouse movement shifts colour mood, click to lock palette.*
+The core idea of Digital Tide is to turn a still sunset image into a constantly changing digital textile. The artwork starts with a brief still moment, letting the viewer see the original image and its composition. After a short delay, the piece enters a dynamic state: ocean waves move through Perlin noise, the sky drifts with soft cloud changes, and the sun area gently pulses.
 
-### Mechanic 2: Time-based: Nicole Zheng
-For my time-based mechanic, I want to create an animation that transforms the group's artwork into **text characters** over time.
+At the same time, the time mechanic spreads ASCII characters across the grid, the user input mechanic lets viewers change the colour tone and trigger seagull or dolphin paths, and the audio mechanic makes the waves respond to music energy.
 
-Depending on how our group interprets the chosen artwork, this could take two forms. If the base image uses varied geometric symbols, I would create a **"flip card" wave effect**. A wave would sweep across the grid, and each cell would flip like a card to reveal a matching text character on the other side (for example, ○ → O, + → +, □ → #). I plan to achieve the flip effect by using `cos()` to scale each cell horizontally. As the cell squishes to zero width, the content switches from shape to character, then expands back to show the new face. By offsetting the timing based on each cell's position and `frameCount`, the flips should ripple across the canvas rather than happening all at once.
+The key design decision is that the four mechanics are not separate layers stacked on top of each other. They all work on the same segment grid. User input changes the colour mood, the time mechanic changes the symbol language, the noise mechanic adds natural movement, and the audio mechanic strengthens the wave rhythm. Because everything affects the same grid, the artwork stays unified — it feels like one interactive environment, not four separate effects.
 
-<img src="readmeImages/ascii-sketch.png" width="400">
+## p5.js Techniques Used
 
-*Flip card concept — geometric crosses transformed into text characters with colours preserved.*
+The project uses image loading, colour sampling, arrays, functions, custom objects, and multiple JavaScript files. sketch.js handles image loading, responsive canvas creation, segment grid generation, and calls each mechanic file.
 
-If the base artwork is more uniform (for example, a repeated cross pattern), I would try a **cracking effect** instead. Cracks would slowly appear on the surface and widen over time, revealing scrambled characters (random letters, numbers, and symbols) underneath the orderly grid.
-
-<img src="readmeImages/enigmatriz-ascii-texture.webp" width="400">
-
-*Cracking concept reference — characters used as visual texture (Enigmatriz).*
-
-In both cases, the original colours would stay the same throughout, so the image remains recognisable even after the transformation. Once the animation finishes, it would reverse and loop back to the original artwork.
-
-I'm not entirely sure how complex this will be to implement, but some of the core concepts have been covered in class (`cos()`, `scale()`, `frameCount`), and the rest (`push()`/`pop()`) are covered in p5.js tutorials I've been researching. 
-
-> Image sources: Flip card sketch generated using [ASCII Lab](https://ascii-lab.sg.agentos-app.run) | Cracking concept reference from [Enigmatriz](https://enigmatriz.com/artworks/ascii-art)
-
-### Mechanic 3: Perlin Noise and Randomness: Ying Li
-The **Perlin noise and randomness mechanic** will make the cross-based grid feel less fixed and more like a **living digital textile**. Ding Yi’s artwork appears highly ordered from a distance, but when viewed closely, the repeated cross marks create a dense and slightly irregular surface. I want to translate this quality into code by using **random values and Perlin noise** to create **controlled imperfections** inside the grid.
-The **random part** will decide which cells receive small variations. For example, some crosses may become slightly larger, smaller, brighter or denser than others. Some areas may contain more marks, while other areas may feel more open. These changes will not completely break the grid. Instead, they will create small interruptions, similar to **uneven stitches, woven threads or handmade variations** within a repeated pattern.
-The **Perlin noise part** will control slow and smooth movement. Instead of making the cells jump randomly, selected marks or thread-like lines will gently **drift, bend or breathe over time**. This mechanic connects to our project because it turns Ding Yi’s static cross structure into a more **organic digital fabric**, where **order and randomness exist together**.
-
-<img src="readmeImages/perlin-noise.jpg">
-
-*Perlin noise mechanic — ordered grid → random variation → smooth breathing motion.*
-
-### Mechanic 4: Audio: Cayla Wang
-The audio mechanic transforms the grid into a **rhythmic, elastic loom** that responds to music in real time, shifting the focus from organic drift to **structural tension**. While the Perlin noise creates subtle, random imperfections, my mechanic uses `p5.FFT` to drive macro-level movements that follow the music’s energy.
-
-The **bass** frequencies control the **"Global Elasticity"** of the grid: on every heavy beat, the entire grid will "pinch" toward the center or expand outward before snapping back, making the digital textile feel like it’s gasping or pulsing in sync with the rhythm. The **mid-range** frequencies handle **"Shearing and Alignment"**: instead of random drifting, the mid-tones will cause even and odd rows of crosses to slide horizontally in opposite directions, mimicking the mechanical shifting of threads on a loom. Finally, the **treble** frequencies trigger **"Signal Flashes"**: high-pitched sounds will cause individual crosses to flicker or change stroke weight instantly, adding a sharp, digital "glitch" texture that contrasts with the smooth movements elsewhere.
-
-<img src="readmeImages/audio-mechanic.png">
-
-*Bass controls grid elasticity, mids shift rows like a loom, treble triggers signal flashes.*
-
-This mechanic connects to our project by turning Ding Yi’s static system into a **reactive instrument**, where the ordered grid is no longer just a surface, but a physical structure that vibrates, stretches, and reacts to the pulse of the sound.
-
-## Part 3: Putting It Together
-
-Our project is like **weaving a "breathing" digital textile** on a shared canvas.
-
-The **grid of crosses** is our foundation. **Xueqin** acts as the weaver, letting the user slide the mouse to change the color mood smoothly. **Ying Li** breathes life into the threads, using Perlin noise to make the surface pulse and drift like a living fabric. **Cayla** transforms the grid into a rhythmic, elastic loom. Finally, **Nicole** uses time to transform the texture, flipping the shapes like cards to reveal hidden layers of code.
-
-By **sharing the same grid system**, our mechanics layer on top of each other, turning a static painting into a **responsive, evolving, and multisensory experience**.
+Main techniques:
+- `noise()` — smooth, natural variation for waves, sky, and sun glow
+- `random()` — random offset for the noise field so each session looks slightly different
+- `map()` — converts noise values into position, size, and movement strength
+- `sin()` — flickering, wave motion, and cyclical animation
+- `frameCount` and timers — controls when the piece transitions between still, noise, and ASCII states
+- `lerp()` — smooths out changes so nothing jumps suddenly
+- `push()` and `pop()` — isolates drawing states between different shapes
+- `windowResized()` — makes the artwork adapt when the browser window is resized
+- Separate script files — each mechanic lives in its own file (noise.js, time-based.js, User-input.js, audio.js)
