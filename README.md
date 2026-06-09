@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-Digital Tide is an interactive visual piece built with p5.js. We took a sunset image and broke it down into a segment grid — a grid of small cells, where each cell stores its position, size, colour, and colour name. Instead of showing the image as a normal picture, the artwork redraws it using repeated symbols: crosses, dots, lines, squares, colour blocks, and ASCII characters.
+**Digital Tide** is an interactive visual piece built with **p5.js**. We took a sunset image and broke it down into a **segment grid** , a grid of small cells where each cell stores its position, size, colour, and colour name. Instead of showing the image as a normal picture, the artwork redraws it using repeated symbols: crosses, dots, lines, squares, colour blocks, and ASCII characters.
 
 From a distance, the sunset silhouette is still recognisable. Up close, the image becomes a dense pattern of geometric marks and characters — somewhere between a landscape painting, a digital mosaic, and a woven textile.
 
-This project reinterprets the repeated cross, grid, and symbol-based visual language of Ding Yi's *Appearance of Crosses*, rather than directly copying one specific image. We applied this visual language to a team-created sunset scene and extended it with interactive p5.js mechanics. As the piece runs, Perlin noise, time-based events, user input, and audio response all affect the same grid, turning the still sunset into something that moves, responds, and changes over time.
+This project reinterprets the repeated cross, grid, and symbol-based visual language of **Ding Yi’s _Appearance of Crosses_**, rather than directly copying one specific image. We applied this visual language to a team-created sunset scene and extended it with interactive **p5.js mechanics**. As the piece runs, **Perlin noise**, **time-based events**, **user input**, and **audio response** all affect the same grid, turning the still sunset into something that moves, responds, and changes over time.
 
 <img src="readmeImages/sunset-grid-comparison.jpg">
 
@@ -28,11 +28,11 @@ Together, these references shaped our direction. Ding Yi gave us the foundation 
 
 ## Project Concept
 
-The core idea of Digital Tide is to turn a still sunset image into a constantly changing digital textile. The artwork starts with a brief still moment, letting the viewer see the original image and its composition. After a short delay, the piece enters a dynamic state: ocean waves move through Perlin noise, the sky drifts with soft cloud changes, and the sun area gently pulses.
+The core idea of **Digital Tide** is to turn a **still sunset image** into a constantly changing **digital textile**. The artwork starts with a brief still moment, letting the viewer see the original image and its composition. After a short delay, the piece enters a dynamic state: ocean waves move through Perlin noise, the sky drifts with soft cloud changes, and the sun area gently pulses.
 
 At the same time, the time mechanic spreads ASCII characters across the grid, the user input mechanic lets viewers change the colour tone and trigger seagull or dolphin paths, and the audio mechanic makes the waves respond to music energy.
 
-The key design decision is that the four mechanics are not separate layers stacked on top of each other. They all work on the same segment grid. User input changes the colour mood, the time mechanic changes the symbol language, the noise mechanic adds natural movement, and the audio mechanic strengthens the wave rhythm. Because everything affects the same grid, the artwork stays unified — it feels like one interactive environment, not four separate effects.
+The key design decision is that the **four mechanics** are not separate layers stacked on top of each other. They all work on the **same segment grid**. User input changes the colour mood, the time mechanic changes the symbol language, the noise mechanic adds natural movement, and the audio mechanic strengthens the wave rhythm. Because everything affects the same grid, the artwork stays **unified** ,it feels like one interactive environment, not four separate effects.
 
 ## p5.js Techniques Used
 
@@ -79,9 +79,9 @@ The colour system was then designed as a shared palette, and path data was made 
 
 This mechanic uses time control and frame-based events to spread ASCII characters across the segment grid in a rhythmic pattern. Its main role is to temporarily transform the image from geometric symbols into a text-based visual layer.
 
-This connects directly to Ding Yi's **repeated symbol language**. Where Ding Yi builds density through repeated crosses and X-shapes, the time mechanic uses repeated ASCII characters as a new kind of visual mark. Characters do not appear randomly — they **spread outward from the sun centre** based on time and distance, creating a transition between landscape, geometric symbols, and characters.
+This connects directly to Ding Yi's repeated symbol language. Where Ding Yi builds density through repeated crosses and X-shapes, the time mechanic uses repeated ASCII characters as a new kind of visual mark. Characters do not appear randomly — they spread outward from the sun centre based on time and distance, creating a transition between landscape, geometric symbols, and characters.
 
-The time mechanic also adds rhythm. The artwork does not stay in one state — it cycles between the noise-driven image and the ASCII layer, with the **spread expanding outward and then reversing**. This makes the piece feel like it has phases, and reinforces the digital textile concept because the characters are woven into the grid like new threads.
+The time mechanic also adds rhythm. The artwork does not stay in one state — it cycles between the noise-driven image and the ASCII layer, with the spread expanding outward and then reversing. This makes the piece feel like it has phases, and reinforces the digital textile concept because the characters are woven into the grid like new threads.
 
 <img src="readmeImages/time-ASCII.jpg">
 
@@ -101,11 +101,11 @@ The spread speed is influenced by the noise wave (`sin(noiseTime)`), and the spr
 
 Ying Li was responsible for the Perlin noise and randomness mechanic, mainly developed in `noise.js`. This mechanic makes the originally still sunset grid feel more alive, while keeping the repeated, grid-based and symbolic visual language inspired by Ding Yi’s work. It mainly affects the ocean, sky and sun areas, turning the static sunset into a dynamic digital seascape.
 
-In the ocean area, Perlin noise controls **wave movement, reflection lines, foam cells and cross-shaped wave shadows**. Different visual elements respond to noise in different ways: dark blue and golden orange cross cells move like wave shadows, sky blue, pink-purple and yellow line cells become shifting reflection lines, and foam-grey or cream-yellow cells morph between circles, squares, crosses and small dot clusters. Instead of random jumping, `noise()` creates **smooth and continuous motion**, so the ocean moves like rolling waves while still preserving the grid structure.
+In the ocean area, Perlin noise controls wave movement, reflection lines, foam cells and cross-shaped wave shadows. Different visual elements respond to noise in different ways: dark blue and golden orange cross cells move like wave shadows, sky blue, pink-purple and yellow line cells become shifting reflection lines, and foam-grey or cream-yellow cells morph between circles, squares, crosses and small dot clusters. Instead of random jumping, `noise()` creates smooth and continuous motion, so the ocean moves like rolling waves while still preserving the grid structure.
 
 In the sky and sun areas, blue cloud cells softly appear and disappear with Perlin noise, while orange crosses and purple line cells shift slightly to create slow atmospheric movement. Around the sun, cream-yellow glow dots flicker and pulse, and the main sun area uses a subtle breathing effect. This makes the whole scene feel dynamic, not just the ocean.
 
-The **seagull path interaction** is also an important part of this mechanic. When the user input mechanic triggers a seagull flying across the sky, the noise mechanic responds by changing the nearby sky cells along its path. These cells shift softly and briefly, creating a wake-like movement trace behind the bird. Instead of placing the seagull effect as a separate animation layer, this design makes the surrounding grid react to the bird’s movement, so the seagull feels connected to the sky environment.
+The seagull path interaction is also an important part of this mechanic. When the user input mechanic triggers a seagull flying across the sky, the noise mechanic responds by changing the nearby sky cells along its path. These cells shift softly and briefly, creating a wake-like movement trace behind the bird. Instead of placing the seagull effect as a separate animation layer, this design makes the surrounding grid react to the bird’s movement, so the seagull feels connected to the sky environment.
 
 <img src="readmeImages/noise-mechanic-examples.jpg">
 
@@ -127,7 +127,7 @@ The mechanic fades in after a short still image so the original artwork can be s
 
 This mechanic uses music volume and frequency energy to influence the artwork, adding a sound-driven rhythm layer. When the viewer clicks the "Activate Music Waves" button, music starts playing and the audio mechanic analyses the sound energy, passing those values to the visual system.
 
-Its main role is to connect the ocean visuals with sound. The system reads **audio energy, bass, mid, and treble** data using a Web Audio API analyser, and converts these into control values that other mechanics can use. When the music has more energy, the **ocean waves move more intensely**.
+Its main role is to connect the ocean visuals with sound. The system reads audio energy, bass, mid, and treble data using a Web Audio API analyser, and converts these into control values that other mechanics can use. When the music has more energy, the ocean waves move more intensely.
 
 <img src="readmeImages/audio-compression.jpg">
 
