@@ -1,3 +1,4 @@
+// [Step 1] Just making some variables to store audio data so we can use them later
 let nativeAudio;     
 let audioCtx, sourceNode, analyserNode; 
 let audioStarted = false;
@@ -12,6 +13,7 @@ let previousBass = 0;
 
 let baseNoiseSpeed = 0.013;
 
+// [Step 2] Getting things ready: grab the local MP3 and load it into the browser
 function setupAudioMechanic() {
   nativeAudio = new Audio();
   nativeAudio.src = 'assets/Echoes of Nature - Low Tide.mp3';
@@ -22,6 +24,7 @@ function setupAudioMechanic() {
     console.log("Audio loaded successfully. Acceleration channel ready.");
   });
 
+  // [Step 3] Throwing a nice toggle button on the top left and styling it a bit
   audioButton = createButton("Activate Music Waves 🌊");
   audioButton.position(16, 16);
   audioButton.style("padding", "10px 16px");
@@ -36,6 +39,7 @@ function setupAudioMechanic() {
   audioButton.mousePressed(startAudioMechanic);
 }
 
+// [Step 4] What happens when clicking the button: play if paused, pause if playing
 function startAudioMechanic() {
   userStartAudio(); 
 
@@ -43,6 +47,7 @@ function startAudioMechanic() {
 
   if (nativeAudio.paused) {
     nativeAudio.play().then(() => {
+      // [Step 5] First time playing? Let us hook up the data bridge to the speakers
       if (!audioCtx) {
         try {
           let AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -71,6 +76,7 @@ function startAudioMechanic() {
   }
 }
 
+// [Step 6] The watch dog running inside the draw loop, also stops the canvas from breaking
 function drawAudioMechanic() {
   if (typeof toneValue !== 'undefined') {
     if (isNaN(toneValue) || toneValue < 0 || toneValue >= 4) {
@@ -82,6 +88,7 @@ function drawAudioMechanic() {
   controlNoiseWithAudio();
 }
 
+// [Step 7] Chopping up the sound: split it to find the bass, mids, and treble values
 function updateAudioLevels() {
   if (!audioStarted || !nativeAudio || nativeAudio.paused || !analyserNode) {
     audioBass = lerp(audioBass, 0, 0.1);
@@ -124,6 +131,7 @@ function updateAudioLevels() {
   }
 }
 
+// [Step 8] Using music as a booster: louder sounds make the original wave noise speed up
 function controlNoiseWithAudio() {
   let targetNoiseSpeed = baseNoiseSpeed;
 
@@ -137,6 +145,7 @@ function controlNoiseWithAudio() {
   }
 }
 
+// [Step 9] Open doors for other JS files to grab the data if they want to join the party
 function getAudioWaveBoost() {
   if (!audioStarted) {
     return 0;
