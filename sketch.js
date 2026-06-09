@@ -7,8 +7,6 @@ let resolution = 93;
 //splits sky and ocean into two parts
 let horizonLine = 0.5;
 
-//prepare base colors for each region
-
 let colorPalette = [];
 
 class PaletteColor {
@@ -31,7 +29,7 @@ class Segment {
   }
 }
 
-function preload(){
+function preload() {
 
   img = loadImage("assets/sunset.png");
 }
@@ -88,7 +86,7 @@ function windowResized() {
   }
 }
 
-function draw(){
+function draw() {
   //update the current tone based on time and user input
   updateToneChange();
 
@@ -121,19 +119,10 @@ function draw(){
   drawSkyOverlap();
 
   //call each mechanic here
-  if (typeof drawNoiseMechanic == "function") {
-    drawNoiseMechanic();
-  }
-  if (typeof drawTimeBased == "function") {
-    drawTimeBased();
-  }
-  if (typeof drawAudioMechanic == "function") {
+  drawNoiseMechanic();
+  drawTimeBased();
   drawAudioMechanic();
-  }
-  if (typeof drawUserinputMechanic == "function") {
   drawUserinputMechanic();
-  }
-
 }
 
 function buildGrid() {
