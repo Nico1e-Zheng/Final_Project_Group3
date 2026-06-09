@@ -8,7 +8,6 @@ let resolution = 93;
 let horizonLine = 0.5;
 
 //prepare base colors for each region
-let skyBase, oceanBase;
 
 let colorPalette = [];
 
@@ -52,8 +51,6 @@ function setup() {
     new PaletteColor("creamYellow", color(250, 220, 190))
   ];
 
-  skyBase = getPaletteColor("skyBlue");
-  oceanBase = getPaletteColor("oceanBlue");
 
   let size = Math.min(windowWidth, windowHeight);
   createCanvas(size, size);
