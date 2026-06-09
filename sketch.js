@@ -130,7 +130,6 @@ function draw(){
   if (typeof drawTimeBased == "function") {
     drawTimeBased();
   }
-  // user input is handled through mousePressed, mouseDragged and mouseReleased
   if (typeof drawAudioMechanic == "function") {
   drawAudioMechanic();
   }
