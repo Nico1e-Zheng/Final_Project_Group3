@@ -148,27 +148,38 @@ y: mouseY
 // Restricts sky paths to the sky area and sea paths to the sea area
 function mouseDragged() {
 if (!isDrawingPath) {
-return;
+return false;
 }
 
 if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) {
-return;
+return false;
 }
 
 let horizonY = height * horizonLine;
 
 if (currentPathArea == "sky" && mouseY >= horizonY) {
-return;
+return false;
 }
 
 if (currentPathArea == "water" && mouseY < horizonY) {
-return;
+return false;
 }
 
+let lastPoint = currentPathPoints[currentPathPoints.length - 1];
+let pointGap = max(10, segmentArr[0].width * 1.8);
+
+if (dist(mouseX, mouseY, lastPoint.x, lastPoint.y) >= pointGap) {
 currentPathPoints.push({
 x: mouseX,
 y: mouseY
 });
+}
+
+if (currentPathPoints.length > 80) {
+currentPathPoints.shift();
+}
+
+return false;
 }
 
 // Uses dist() to check the drag distance and generates the corresponding animation based on the area
