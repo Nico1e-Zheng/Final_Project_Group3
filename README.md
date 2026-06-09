@@ -51,6 +51,27 @@ Main techniques:
 
 ## Mechanic Ownership
 
+### Xueqin — User Input Mechanic
+
+**File:** User-input.js
+
+This mechanic uses keyboard and mouse input to let viewers directly affect the artwork's colours, paths, and animations. Its main role is to turn viewer actions into visual changes, making the piece interactive rather than just an auto-playing animation.
+
+**Colour control:** The mechanic uses different tone palettes to change the overall colour mood. Viewers can hold the left or right arrow keys to smoothly cycle between morning, noon, sunset, and night tones. This colour system is shared across all mechanics through `getPaletteColor()` and `applyToneToSegments()`, so the base image, noise effects, and ASCII characters all follow the same current tone.
+
+
+<img src="readmeImages/userinput-compression.jpg">
+
+*Figure 3.User input mechanic showing the four tone palettes (noon, night, sunset, morning from left to right) controlled by arrow keys, with close-ups of the seagull and dolphin animations triggered by mouse dragging.*
+
+#### Development Process
+
+The tone colour system was the starting point. Four colour palettes were set up for different time-of-day moods, so the same sunset image can shift between morning, noon, sunset, and night. The focus was on letting user input change the overall atmosphere, not just individual elements.
+
+Mouse interaction came next. By detecting where the drag starts (sky or ocean), the system triggers either a seagull or dolphin animation. This gave user input a more concrete visual result beyond just colour changes.
+
+The colour system was then designed as a shared palette, and path data was made accessible to other mechanics, so tone changes and mouse interaction can affect the whole artwork.
+
 ### Nicole — Time-Based Mechanic
 
 **File:** time-based.js
@@ -63,7 +84,7 @@ The time mechanic also adds rhythm. The artwork does not stay in one state — i
 
 <img src="readmeImages/time-ASCII.jpg">
 
-*Figure 3. The artwork in different states: sunset tone with noise movement (left), night tone (centre), and ASCII characters spreading across the grid (right).*
+*Figure 4. The artwork in different states: sunset tone with noise movement (left), night tone (centre), and ASCII characters spreading across the grid (right).*
 
 #### Development Process
 
@@ -73,6 +94,28 @@ The spread rhythm went through several rounds of adjustment. ASCII characters ap
 
 The spread speed is influenced by the noise wave (`sin(noiseTime)`), and the spread progress also drives `toneValue` forward, so the colour tone automatically shifts during ASCII expansion. Characters appear based on segment grid positions rather than as an independent overlay.
 
+### Ying Li — Perlin Noise and Randomness Mechanic
+
+**File:** noise.js
+
+Ying Li was responsible for the Perlin noise and randomness mechanic, mainly developed in noise.js. This mechanic makes the originally still sunset grid feel more alive, while keeping the repeated, grid-based and symbolic visual language inspired by Ding Yi’s work. It mainly affects the ocean, sky and sun areas, turning the static sunset into a dynamic digital seascape.
+
+In the ocean area, Perlin noise controls wave movement, reflection lines, foam cells and cross-shaped wave shadows. Instead of random jumping, noise() creates smooth and continuous motion, so the ocean moves like rolling waves while still preserving the grid structure. In the sky and sun areas, blue cloud cells and orange sky areas shift subtly with Perlin noise, while the sun glow dots flicker softly. This makes the whole scene feel dynamic, not just the ocean.
+
+The seagull path interaction is also an important part of this mechanic. When the user input mechanic triggers a seagull flying across the sky, the noise mechanic responds by changing the nearby sky cells along its path. These cells shift softly and briefly, creating a wake-like movement trace behind the bird. Instead of placing the seagull effect as a separate animation layer, this design makes the surrounding grid react to the bird’s movement, so the seagull feels connected to the sky environment.
+
+<img src="readmeImages/noise-mechanic-examples.jpg">
+
+*Figure 5. Noise mechanic in action across different tones (left to right), with close-ups of the soft sky wake left behind a seagull path (top right) and a dolphin in the wave region (bottom right).*
+
+#### Development Process
+The Perlin noise and randomness mechanic went through several rounds of testing and adjustment. At first, the focus was on the ocean. noise() was used to animate reflection lines, wave shadows and foam cells, making the still sea move with a gentle wave rhythm. The speed, movement range and shape changes were adjusted multiple times so the motion would feel natural without breaking the original image.
+
+The mechanic was then extended to the sky and sun. Blue cloud cells were given soft movement, orange areas gained subtle flow, and the sun glow dots were adjusted to create a gentle flickering effect without covering the main sun shape.
+
+Later, the noise mechanic was connected with the seagull path from the user input mechanic. When a seagull is triggered, nearby sky cells shift slightly, creating a natural movement trace instead of adding a separate layer.
+
+Finally, the mechanic was integrated with the group system. It uses the shared colour palette to follow user input tone changes, coordinates with the time mechanic to avoid visual overlap, and connects with the audio mechanic by strengthening wave movement when music energy increases. Through these changes, the noise mechanic became a system that connects natural motion, colour changes, user interaction, time-based transformation and sound response within the same segment grid.
 
 ### Cayla — Audio Mechanic
 
@@ -84,7 +127,7 @@ Its main role is to connect the ocean visuals with sound. The system reads audio
 
 <img src="readmeImages/audio-compression.jpg">
 
-*Figure 4. Audio mechanic comparison: before activation (left) and after activation (right). When music is playing, the ocean waves move more actively in response to sound energy.*
+*Figure 6. Audio mechanic comparison: before activation (left) and after activation (right). When music is playing, the ocean waves move more actively in response to sound energy.*
 
 
 #### Development Process
@@ -113,7 +156,7 @@ The result: user input controls the global colour and triggers path events, time
 
 <img src="readmeImages/mechanics-interaction.png" width="500">
 
-*Figure 5. Mechanic connection diagram — each mechanic produces data that flows into the shared segment grid, keeping all four systems linked rather than layered separately.*
+*Figure 7. Mechanic connection diagram — each mechanic produces data that flows into the shared segment grid, keeping all four systems linked rather than layered separately.*
 
 ## Interaction Instructions
 
