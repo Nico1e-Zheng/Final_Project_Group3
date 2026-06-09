@@ -119,8 +119,6 @@ The mechanic was then extended to the sky and sun. Blue cloud cells were given s
 
 Later, the noise mechanic was connected with the seagull path from the user input mechanic. When a seagull is triggered, nearby sky cells shift slightly, creating a natural movement trace instead of adding a separate layer. This helps the interaction feel part of the same grid environment.
 
-Finally, the mechanic was integrated with the group system. It fades in after a short still image so the original artwork can be seen first, uses `getPaletteColor()` to follow user input tone changes, checks `isInTimeSpread()` to avoid visual overlap with the time-based ASCII mechanic, and connects with the audio mechanic through `getAudioWaveBoost()` so wave movement becomes stronger when music energy increases. Through these changes, the noise mechanic became a system that connects natural motion, colour changes, user interaction, time-based transformation and sound response within the same segment grid.
-
 The mechanic fades in after a short still image so the original artwork can be seen first, then coordinates with the time and audio mechanics by managing drawing regions and adjusting movement intensity.
 
 ### Cayla — Audio Mechanic
@@ -160,7 +158,7 @@ The four mechanics are not four separate effects layered on top of each other. T
 
 The result: user input controls the global colour and triggers path events, time changes the grid's symbol state, noise handles natural movement and environmental response, and audio strengthens the wave rhythm. All changes come from the same segment grid, keeping the artwork unified.
 
-<img src="readmeImages/mechanics-interaction.png" width="500">
+<img src="readmeImages/mechanics-interaction.png">
 
 *Figure 7. Mechanic connection diagram — each mechanic produces data that flows into the shared segment grid, keeping all four systems linked rather than layered separately.*
 
